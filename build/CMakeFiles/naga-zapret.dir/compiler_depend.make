@@ -668,7 +668,6 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
-  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGraphicsDropShadowEffect \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
@@ -680,7 +679,6 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgraphicseffect.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
@@ -947,8 +945,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGraphicsDropShadowEffect:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication:
 
@@ -1759,8 +1755,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake:
 
 /usr/share/cmake-4.2/Modules/Internal/CheckCompilerFlag.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgraphicseffect.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qpoint.h:
 

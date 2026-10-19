@@ -14,13 +14,7 @@ class ZapretWindow : public QWidget {
 public:
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
-        resize(550, 600);
-
-        // Belirtilen Renk Paleti:
-        // #2C2C2C (Koyu Arka Plan)
-        // #853953 (Vurgu / Buton / Başlık)
-        // #612D53 (Koyu Bordo / Kartlar & İkincil Vurgu)
-        // #F3F4F4 (Açık Gri / Metinler)
+        resize(580, 650);
 
         setStyleSheet(R"(
             QWidget {
@@ -47,24 +41,38 @@ public:
                 font-weight: 600;
                 color: #F3F4F4;
             }
-            QPushButton#btnStart {
-                background-color: #853953;
+            QPushButton {
                 color: #F3F4F4;
                 font-weight: bold;
-                font-size: 14px;
-                padding: 12px;
+                font-size: 13px;
+                padding: 10px;
                 border-radius: 8px;
                 border: none;
+            }
+            QPushButton#btnStart {
+                background-color: #853953;
             }
             QPushButton#btnStart:hover {
                 background-color: #a04565;
             }
-            QPushButton#btnStart:pressed {
-                background-color: #612D53;
-            }
-            QPushButton#btnStart:disabled {
+            QPushButton#btnStop {
                 background-color: #44213a;
-                color: #888888;
+                border: 1px solid #853953;
+            }
+            QPushButton#btnStop:hover {
+                background-color: #582b4b;
+            }
+            QPushButton#btnTest {
+                background-color: #612D53;
+                border: 1px solid #853953;
+            }
+            QPushButton#btnTest:hover {
+                background-color: #7a3869;
+            }
+            QPushButton:disabled {
+                background-color: #1e1e1e;
+                color: #666666;
+                border: none;
             }
             QTextEdit {
                 background-color: #1e1e1e;
@@ -81,7 +89,7 @@ public:
         mainLayout->setSpacing(16);
         mainLayout->setContentsMargins(20, 20, 20, 20);
 
-        // Başlık Alanı
+        // Başlık
         auto *lblTitle = new QLabel("Naga Zapret Control Center", this);
         lblTitle->setObjectName("title");
         mainLayout->addWidget(lblTitle);
@@ -96,11 +104,21 @@ public:
         statusLayout->addWidget(statusLabel);
         mainLayout->addWidget(statusCard);
 
-        // Başlat Butonu (Emoji ve & karakteri temizlendi)
-        btnStart = new QPushButton("Zapret Kur ve Test Et", this);
+        // Zapret Kontrol Butonları (Yan Yana)
+        auto *actionLayout = new QHBoxLayout();
+        actionLayout->setSpacing(10);
+
+        btnStart = new QPushButton("Zapret Kur ve Başlat", this);
         btnStart->setObjectName("btnStart");
         btnStart->setCursor(Qt::PointingHandCursor);
-        mainLayout->addWidget(btnStart);
+
+        btnStop = new QPushButton("Zapret Durdur ve Kaldır", this);
+        btnStop->setObjectName("btnStop");
+        btnStop->setCursor(Qt::PointingHandCursor);
+
+        actionLayout->addWidget(btnStart);
+        actionLayout->addWidget(btnStop);
+        mainLayout->addLayout(actionLayout);
 
         // Bağlantı Testleri Kartı
         auto *testCard = new QWidget(this);
@@ -108,9 +126,18 @@ public:
         auto *testLayout = new QVBoxLayout(testCard);
         testLayout->setSpacing(10);
 
+        auto *testHeaderLayout = new QHBoxLayout();
         auto *lblTestTitle = new QLabel("Erişim Durumu (DPI Testi)", this);
         lblTestTitle->setStyleSheet("font-weight: bold; color: #F3F4F4;");
-        testLayout->addWidget(lblTestTitle);
+        
+        btnTest = new QPushButton("Bağlantı Testi Yap", this);
+        btnTest->setObjectName("btnTest");
+        btnTest->setCursor(Qt::PointingHandCursor);
+
+        testHeaderLayout->addWidget(lblTestTitle);
+        testHeaderLayout->addStretch();
+        testHeaderLayout->addWidget(btnTest);
+        testLayout->addLayout(testHeaderLayout);
 
         discordLabel = new QLabel("• Discord: Test Edilmedi", this);
         robloxLabel = new QLabel("• Roblox: Test Edilmedi", this);
@@ -126,7 +153,10 @@ public:
         logArea->setReadOnly(true);
         mainLayout->addWidget(logArea);
 
+        // Sinyal Bağlantıları
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
+        connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
+        connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::runTests);
     }
 
 private:
@@ -135,9 +165,17 @@ private:
     QLabel *robloxLabel;
     QTextEdit *logArea;
     QPushButton *btnStart;
+    QPushButton *btnStop;
+    QPushButton *btnTest;
+
+    void setButtonsEnabled(bool enabled) {
+        btnStart->setEnabled(enabled);
+        btnStop->setEnabled(enabled);
+        btnTest->setEnabled(enabled);
+    }
 
     void startZapret() {
-        btnStart->setEnabled(false);
+        setButtonsEnabled(false);
         logArea->append("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
         statusLabel->setText("Durum: Kuruluyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
@@ -156,7 +194,7 @@ private:
         });
 
         connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this](int exitCode) {
-            btnStart->setEnabled(true);
+            setButtonsEnabled(true);
             if (exitCode == 0) {
                 logArea->append("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
                 statusLabel->setText("Durum: Çalışıyor");
@@ -172,7 +210,48 @@ private:
         process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
     }
 
+    void stopZapret() {
+        setButtonsEnabled(false);
+        logArea->append("> Zapret durduruluyor ve sistemden kaldırılıyor...");
+        statusLabel->setText("Durum: Kaldırılıyor...");
+        statusLabel->setStyleSheet("color: #f59e0b;");
+
+        QString cmd = "if [ -f /opt/zapret/uninstall_easy.sh ]; then "
+                      "echo -e \"Y\\n\\n\" | /opt/zapret/uninstall_easy.sh; "
+                      "fi && "
+                      "systemctl stop zapret 2>/dev/null; "
+                      "rm -rf /opt/zapret";
+
+        auto *process = new QProcess(this);
+        connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
+            logArea->append(process->readAllStandardOutput());
+        });
+
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this](int exitCode) {
+            setButtonsEnabled(true);
+            if (exitCode == 0) {
+                logArea->append("> Zapret başarıyla durduruldu ve kaldırıldı.");
+                statusLabel->setText("Durum: Durduruldu / Kaldırıldı");
+                statusLabel->setStyleSheet("color: #f87171;");
+            } else {
+                logArea->append("> Hata: Kaldırma işlemi sırasında bir sorun oluştu.");
+                statusLabel->setText("Durum: Hata Oluştu");
+                statusLabel->setStyleSheet("color: #f87171;");
+            }
+        });
+
+        process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
+    }
+
     void runTests() {
+        btnTest->setEnabled(false);
+        logArea->append("> Bağlantı testleri yürütülüyor...");
+        
+        discordLabel->setText("• Discord: Test ediliyor...");
+        discordLabel->setStyleSheet("color: #f59e0b;");
+        robloxLabel->setText("• Roblox: Test ediliyor...");
+        robloxLabel->setStyleSheet("color: #f59e0b;");
+
         auto *manager = new QNetworkAccessManager(this);
 
         QNetworkReply *replyDiscord = manager->get(QNetworkRequest(QUrl("https://discord.com")));
@@ -180,20 +259,25 @@ private:
             if (replyDiscord->error() == QNetworkReply::NoError) {
                 discordLabel->setText("• Discord: Erişilebilir (OK)");
                 discordLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
+                logArea->append("> [TEST OK] Discord bağlantısı başarılı.");
             } else {
                 discordLabel->setText("• Discord: Erişilemedi");
                 discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
+                logArea->append("> [TEST HATA] Discord bağlantısı başarısız.");
             }
         });
 
         QNetworkReply *replyRoblox = manager->get(QNetworkRequest(QUrl("https://www.roblox.com")));
         connect(replyRoblox, &QNetworkReply::finished, [this, replyRoblox]() {
+            btnTest->setEnabled(true);
             if (replyRoblox->error() == QNetworkReply::NoError) {
                 robloxLabel->setText("• Roblox: Erişilebilir (OK)");
                 robloxLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
+                logArea->append("> [TEST OK] Roblox bağlantısı başarılı.");
             } else {
                 robloxLabel->setText("• Roblox: Erişilemedi");
                 robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
+                logArea->append("> [TEST HATA] Roblox bağlantısı başarısız.");
             }
         });
     }
