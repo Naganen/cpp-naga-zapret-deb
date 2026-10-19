@@ -244,6 +244,14 @@ private:
                       "echo '> Paketler güncelleniyor...' && "
                       "apt-get update -qq && "
                       "apt-get install -y curl jq iptables nftables tar wget bind9-dnsutils dnscrypt-proxy && "
+                      "echo '> DNS Şifrelemesi (dnscrypt-proxy) kilitleniyor...' && "
+                      "systemctl enable dnscrypt-proxy 2>/dev/null || true && "
+                      "systemctl restart dnscrypt-proxy 2>/dev/null || true && "
+                      "chattr -i /etc/resolv.conf 2>/dev/null || true && "
+                      "rm -f /etc/resolv.conf && "
+                      "echo 'nameserver 127.0.0.1' > /etc/resolv.conf && "
+                      "echo 'nameserver ::1' >> /etc/resolv.conf && "
+                      "chattr +i /etc/resolv.conf 2>/dev/null || true && "
                       "echo '> Zapret indiriliyor...' && "
                       "mkdir -p /opt/zapret && "
                       "wget -q -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
@@ -252,11 +260,11 @@ private:
                       "yes '' | /opt/zapret/install_prereq.sh && "
                       "echo '> İkili dosyalar (binaries) derleniyor...' && "
                       "/opt/zapret/install_bin.sh && "
-                      "echo '> Yapılandırma ayarlanıyor...' && "
+                      "echo '> DPI Aşma parametreleri yapılandırılıyor...' && "
                       "cp -f /opt/zapret/config.default /opt/zapret/config && "
                       "sed -i 's/^FWTYPE=.*/FWTYPE=nftables/' /opt/zapret/config && "
                       "sed -i 's/^MODE=.*/MODE=nfqws/' /opt/zapret/config && "
-                      "sed -i 's/^NFQWS_OPT_DESYNC=.*/NFQWS_OPT_DESYNC=\"--dpi-desync=fake,split2 --dpi-desync-ttl=0\"/' /opt/zapret/config && "
+                      "sed -i 's|^NFQWS_OPT_DESYNC=.*|NFQWS_OPT_DESYNC=\"--dpi-desync=fake,split2 --dpi-desync-ttl=3\"|' /opt/zapret/config && "
                       "echo '> Servis başlatılıyor...' && "
                       "cp -f /opt/zapret/init.d/systemd/zapret.service /etc/systemd/system/zapret.service 2>/dev/null || true && "
                       "systemctl daemon-reload 2>/dev/null || true && "
@@ -298,12 +306,18 @@ private:
                       "systemctl stop zapret 2>/dev/null || true; "
                       "systemctl disable zapret 2>/dev/null || true; "
                       "rm -rf /opt/zapret; "
-                      "rm -f /etc/systemd/system/zapret.service";
+                      "rm -f /etc/systemd/system/zapret.service; "
+                      "echo '> DNS kilidi kaldırılıyor ve ağ normale döndürülüyor...' && "
+                      "chattr -i /etc/resolv.conf 2>/dev/null || true && "
+                      "rm -f /etc/resolv.conf && "
+                      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && "
+                      "echo 'nameserver 1.1.1.1' >> /etc/resolv.conf && "
+                      "systemctl restart systemd-resolved 2>/dev/null || true";
 
         runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
-                appendLog("> Zapret başarıyla durduruldu ve kaldırıldı.");
+                appendLog("> Zapret başarıyla durduruldu ve DNS normale döndürüldü.");
                 statusLabel->setText("Durum: Kaldırıldı");
                 statusLabel->setStyleSheet("color: #f87171;");
             } else {
