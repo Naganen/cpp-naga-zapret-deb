@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <unistd.h> // geteuid() kontrolü için
 
 class ZapretWindow : public QWidget {
 public:
@@ -173,10 +174,14 @@ private:
     QPushButton *btnStop;
     QPushButton *btnTest;
 
+    bool isRoot() {
+        return geteuid() == 0;
+    }
+
     void appendLog(const QString &text) {
         logArea->append(text);
         logArea->ensureCursorVisible();
-        QApplication::processEvents(); // Arayüzün donmasını engeller, canlı günceller
+        QApplication::processEvents();
     }
 
     void setButtonsEnabled(bool enabled) {
@@ -196,20 +201,7 @@ private:
         }
     }
 
-    void startZapret() {
-        setButtonsEnabled(false);
-        appendLog("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
-        statusLabel->setText("Durum: Kuruluyor...");
-        statusLabel->setStyleSheet("color: #f59e0b;");
-
-        QString cmd = "apt-get update && apt-get install -y curl jq iptables nftables tar wget bind9-dnsutils dnscrypt-proxy && "
-                      "mkdir -p /opt/zapret && "
-                      "wget -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
-                      "tar -xzf /tmp/zapret.tar.gz -C /tmp && cp -rf /tmp/zapret-v72.13/* /opt/zapret/ && "
-                      "/opt/zapret/install_prereq.sh && /opt/zapret/install_bin.sh && "
-                      "echo -e \"\\n\\n\\n4\\n\\n\\nY\\n\\n\\n\\n\\n\\n\" | /opt/zapret/install_easy.sh && "
-                      "systemctl restart zapret";
-
+    void runCommandAsRoot(const QString &cmd, std::function<void(int)> onFinished) {
         auto *process = new QProcess(this);
         connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
             appendLog(process->readAllStandardOutput().trimmed());
@@ -218,7 +210,55 @@ private:
             appendLog(process->readAllStandardError().trimmed());
         });
 
-        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [process, onFinished](int exitCode) {
+            onFinished(exitCode);
+            process->deleteLater();
+        });
+
+        if (isRoot()) {
+            // Eğer uygulama zaten sudo/root ile başlatıldıysa doğrudan bash ile çalıştır
+            process->start("bash", QStringList() << "-c" << cmd);
+        } else {
+            // Normal kullanıcı olarak başlatıldıysa pkexec çağır
+            process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
+        }
+    }
+
+    void startZapret() {
+        setButtonsEnabled(false);
+        if (isRoot()) {
+            appendLog("> Kurulum başlatılıyor (Root yetkisi mevcut)...");
+        } else {
+            appendLog("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
+        }
+        statusLabel->setText("Durum: Kuruluyor...");
+        statusLabel->setStyleSheet("color: #f59e0b;");
+
+        // install.sh dosyasındaki mantığı doğrudan çalıştıran asenkron bash komutu
+        QString cmd = "export DEBIAN_FRONTEND=noninteractive && "
+                      "echo '> Paketler güncelleniyor...' && "
+                      "apt-get update -qq && "
+                      "apt-get install -y curl jq iptables nftables tar wget bind9-dnsutils dnscrypt-proxy && "
+                      "echo '> Zapret indiriliyor...' && "
+                      "mkdir -p /opt/zapret && "
+                      "wget -q -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
+                      "tar -xzf /tmp/zapret.tar.gz -C /tmp && cp -rf /tmp/zapret-v72.13/* /opt/zapret/ && "
+                      "echo '> Ön gereksinimler kuruluyor...' && "
+                      "/opt/zapret/install_prereq.sh >/dev/null 2>&1 && "
+                      "/opt/zapret/install_bin.sh >/dev/null 2>&1 && "
+                      "echo '> Yapılandırma ayarlanıyor...' && "
+                      "cp -f /opt/zapret/config.default /opt/zapret/config && "
+                      "sed -i 's/^FWTYPE=.*/FWTYPE=nftables/' /opt/zapret/config && "
+                      "sed -i 's/^MODE=.*/MODE=nfqws/' /opt/zapret/config && "
+                      "sed -i 's/^NFQWS_OPT_DESYNC=.*/NFQWS_OPT_DESYNC=\"--dpi-desync=fake,split2 --dpi-desync-ttl=0\"/' /opt/zapret/config && "
+                      "echo '> Servis başlatılıyor...' && "
+                      "cp -f /opt/zapret/init.d/systemd/zapret.service /etc/systemd/system/zapret.service 2>/dev/null || true && "
+                      "systemctl daemon-reload 2>/dev/null || true && "
+                      "systemctl enable zapret 2>/dev/null || true && "
+                      "systemctl restart zapret 2>/dev/null || true && "
+                      "echo '> Kurulum tamamlandı!'";
+
+        runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
                 appendLog("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
@@ -226,13 +266,10 @@ private:
                 statusLabel->setStyleSheet("color: #4ade80;");
                 startMultiTests();
             } else {
-                appendLog("> Hata: Kurulum başarısız oldu veya iptal edildi.");
+                appendLog(QString("> Hata: Kurulum başarısız oldu (Çıkış Kodu: %1).").arg(exitCode));
                 checkStatus();
             }
-            process->deleteLater();
         });
-
-        process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
     }
 
     void stopZapret() {
@@ -252,33 +289,22 @@ private:
         QString cmd = "if [ -f /opt/zapret/uninstall_easy.sh ]; then "
                       "echo -e 'Y\\n' | /opt/zapret/uninstall_easy.sh; "
                       "fi; "
-                      "systemctl stop zapret 2>/dev/null; "
-                      "systemctl disable zapret 2>/dev/null; "
+                      "systemctl stop zapret 2>/dev/null || true; "
+                      "systemctl disable zapret 2>/dev/null || true; "
                       "rm -rf /opt/zapret; "
                       "rm -f /etc/systemd/system/zapret.service";
 
-        auto *process = new QProcess(this);
-        connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
-            appendLog(process->readAllStandardOutput().trimmed());
-        });
-        connect(process, &QProcess::readyReadStandardError, [this, process]() {
-            appendLog(process->readAllStandardError().trimmed());
-        });
-
-        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
+        runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
                 appendLog("> Zapret başarıyla durduruldu ve kaldırıldı.");
                 statusLabel->setText("Durum: Kaldırıldı");
                 statusLabel->setStyleSheet("color: #f87171;");
             } else {
-                appendLog("> Hata: Kaldırma işlemi tamamlanamadı.");
+                appendLog(QString("> Hata: Kaldırma işlemi tamamlanamadı (Çıkış Kodu: %1).").arg(exitCode));
                 checkStatus();
             }
-            process->deleteLater();
         });
-
-        process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
     }
 
     void startMultiTests() {
@@ -379,7 +405,7 @@ private:
             }
         });
 
-        timer->start(3000); // 3 saniye timeout
+        timer->start(3000);
     }
 };
 

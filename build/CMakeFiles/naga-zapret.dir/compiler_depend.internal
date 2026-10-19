@@ -378,6 +378,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/features.h
  /usr/include/libintl.h
  /usr/include/limits.h
+ /usr/include/linux/close_range.h
  /usr/include/linux/errno.h
  /usr/include/linux/limits.h
  /usr/include/linux/posix_types.h
@@ -395,6 +396,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/string.h
  /usr/include/strings.h
  /usr/include/time.h
+ /usr/include/unistd.h
  /usr/include/wchar.h
  /usr/include/wctype.h
  /usr/include/x86_64-linux-gnu/asm/bitsperlong.h
@@ -404,15 +406,19 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/asm/types.h
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h
  /usr/include/x86_64-linux-gnu/bits/byteswap.h
+ /usr/include/x86_64-linux-gnu/bits/confname.h
  /usr/include/x86_64-linux-gnu/bits/cpu-set.h
  /usr/include/x86_64-linux-gnu/bits/endian.h
  /usr/include/x86_64-linux-gnu/bits/endianness.h
+ /usr/include/x86_64-linux-gnu/bits/environments.h
  /usr/include/x86_64-linux-gnu/bits/errno.h
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h
  /usr/include/x86_64-linux-gnu/bits/floatn.h
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h
  /usr/include/x86_64-linux-gnu/bits/fp-fast.h
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h
@@ -426,6 +432,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h
  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
@@ -472,6 +479,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/typesizes.h
  /usr/include/x86_64-linux-gnu/bits/uintn-identity.h
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
@@ -493,6 +501,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/c++/15/bits/time_members.h
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h
  /usr/include/x86_64-linux-gnu/gnu/stubs.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QElapsedTimer
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QFileInfo
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QFlags
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice
@@ -553,6 +562,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdebug.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qendian.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qexceptionhandling.h
