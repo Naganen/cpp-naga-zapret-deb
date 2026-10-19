@@ -9,6 +9,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QFileInfo>
 
 class ZapretWindow : public QWidget {
 public:
@@ -99,12 +100,12 @@ public:
         statusCard->setObjectName("card");
         auto *statusLayout = new QVBoxLayout(statusCard);
         
-        statusLabel = new QLabel("Durum: Hazır", this);
+        statusLabel = new QLabel("Durum: Kontrol Ediliyor...", this);
         statusLabel->setObjectName("status");
         statusLayout->addWidget(statusLabel);
         mainLayout->addWidget(statusCard);
 
-        // Zapret Kontrol Butonları (Yan Yana)
+        // Zapret Kontrol Butonları
         auto *actionLayout = new QHBoxLayout();
         actionLayout->setSpacing(10);
 
@@ -157,6 +158,8 @@ public:
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::runTests);
+
+        checkStatus();
     }
 
 private:
@@ -172,6 +175,17 @@ private:
         btnStart->setEnabled(enabled);
         btnStop->setEnabled(enabled);
         btnTest->setEnabled(enabled);
+    }
+
+    void checkStatus() {
+        bool installed = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
+        if (installed) {
+            statusLabel->setText("Durum: Zapret Kurulu");
+            statusLabel->setStyleSheet("color: #4ade80;");
+        } else {
+            statusLabel->setText("Durum: Kurulu Değil");
+            statusLabel->setStyleSheet("color: #d1d5db;");
+        }
     }
 
     void startZapret() {
@@ -192,8 +206,11 @@ private:
         connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
             logArea->append(process->readAllStandardOutput());
         });
+        connect(process, &QProcess::readyReadStandardError, [this, process]() {
+            logArea->append(process->readAllStandardError());
+        });
 
-        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this](int exitCode) {
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
                 logArea->append("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
@@ -201,43 +218,58 @@ private:
                 statusLabel->setStyleSheet("color: #4ade80;");
                 runTests();
             } else {
-                logArea->append("> Hata: Kurulum başarısız oldu.");
-                statusLabel->setText("Durum: Hata Oluştu");
-                statusLabel->setStyleSheet("color: #f87171;");
+                logArea->append("> Hata: Kurulum başarısız oldu veya iptal edildi.");
+                checkStatus();
             }
+            process->deleteLater();
         });
 
         process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
     }
 
     void stopZapret() {
+        // 1. Sistemde Zapret olup olmadığının kontrolü
+        bool exists = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
+        if (!exists) {
+            logArea->append("> Sistemde kurulu bir Zapret bulunamadı.");
+            statusLabel->setText("Durum: Kurulu Değil");
+            statusLabel->setStyleSheet("color: #d1d5db;");
+            return;
+        }
+
         setButtonsEnabled(false);
         logArea->append("> Zapret durduruluyor ve sistemden kaldırılıyor...");
         statusLabel->setText("Durum: Kaldırılıyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
+        // Güvenli kaldırma komutu
         QString cmd = "if [ -f /opt/zapret/uninstall_easy.sh ]; then "
-                      "echo -e \"Y\\n\\n\" | /opt/zapret/uninstall_easy.sh; "
-                      "fi && "
+                      "echo -e 'Y\\n' | /opt/zapret/uninstall_easy.sh; "
+                      "fi; "
                       "systemctl stop zapret 2>/dev/null; "
-                      "rm -rf /opt/zapret";
+                      "systemctl disable zapret 2>/dev/null; "
+                      "rm -rf /opt/zapret; "
+                      "rm -f /etc/systemd/system/zapret.service";
 
         auto *process = new QProcess(this);
         connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
             logArea->append(process->readAllStandardOutput());
         });
+        connect(process, &QProcess::readyReadStandardError, [this, process]() {
+            logArea->append(process->readAllStandardError());
+        });
 
-        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this](int exitCode) {
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
                 logArea->append("> Zapret başarıyla durduruldu ve kaldırıldı.");
-                statusLabel->setText("Durum: Durduruldu / Kaldırıldı");
+                statusLabel->setText("Durum: Kaldırıldı");
                 statusLabel->setStyleSheet("color: #f87171;");
             } else {
-                logArea->append("> Hata: Kaldırma işlemi sırasında bir sorun oluştu.");
-                statusLabel->setText("Durum: Hata Oluştu");
-                statusLabel->setStyleSheet("color: #f87171;");
+                logArea->append("> Hata: Kaldırma işlemi tamamlanamadı.");
+                checkStatus();
             }
+            process->deleteLater();
         });
 
         process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
@@ -265,6 +297,7 @@ private:
                 discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
                 logArea->append("> [TEST HATA] Discord bağlantısı başarısız.");
             }
+            replyDiscord->deleteLater();
         });
 
         QNetworkReply *replyRoblox = manager->get(QNetworkRequest(QUrl("https://www.roblox.com")));
@@ -279,6 +312,7 @@ private:
                 robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
                 logArea->append("> [TEST HATA] Roblox bağlantısı başarısız.");
             }
+            replyRoblox->deleteLater();
         });
     }
 };
