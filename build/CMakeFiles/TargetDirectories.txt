@@ -1,0 +1,5 @@
+/mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/naga-zapret-deb/build/CMakeFiles/naga-zapret.dir
+/mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/naga-zapret-deb/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/naga-zapret-deb/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/naga-zapret-deb/build/CMakeFiles/naga-zapret_autogen_timestamp_deps.dir
+/mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/naga-zapret-deb/build/CMakeFiles/naga-zapret_autogen.dir
