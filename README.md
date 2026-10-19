@@ -16,12 +16,14 @@
   * [Konsol Açmadan Kullanım Rehberi](#konsolsuz-kullanım)
   * [Özellikler](#özellikler)
   * [Geliştiriciler İçin (Kaynak Kod & Terminal)](#geliştiriciler-için)
+  * [Teşekkürler ve Atıflar](#teşekkürler-ve-atıflar)
 * [🇬🇧 English Documentation](#english)
   * [Why Naga Zapret? (Project Purpose)](#project-purpose)
   * [Console-Free GUI Installation](#gui-installation)
   * [Console-Free Usage Guide](#gui-usage)
   * [Key Features](#key-features)
   * [For Developers (Source Code & CLI)](#for-developers)
+  * [Credits & Acknowledgements](#credits)
 * [Yazar & İletişim / Author](#author)
 
 ---
@@ -88,6 +90,7 @@ Herhangi bir terminal/uçbirim açmanıza gerek yoktur:
 ### ✨ Temel Özellikler
 
 * 🎨 **Tamamen Grafik Arayüz (Qt6):** Koyu temalı, temiz ve anlaşılır kontrol merkezi.
+* 📦 **Akıllı Kurulum Motoru:** Arka planda çalışan ve [keift/zapret](https://github.com/keift/zapret) projesinden sağlanan otomatik yapılandırma betiği.
 * ⚡ **10x Canlı Paket Testi:** Discord ve Roblox'a anlık erişim doğrulama ve ms gecikme analizi.
 * 🛡️ **Polkit (`pkexec`) Koruması:** Terminal şifresi girmek yerine standart Linux yönetici onay penceresi.
 * 🧹 **Kalıntısız Temizlik:** DNS kilitlemelerini otomatik çözer, internet kopmalarına yol açmaz.
@@ -133,6 +136,16 @@ chmod 755 naga-zapret-package/usr/share/naga-zapret/install.sh
 dpkg-deb --build naga-zapret-package naga-zapret-0.0.11_amd64.deb
 ```
 </details>
+
+---
+
+<a name="teşekkürler-ve-atıflar"></a>
+### 🙏 Teşekkürler ve Atıflar
+
+Bu projenin arka planında çalışan sistem yapılandırmalarında açık kaynak topluluğunun değerli çalışmalarından faydalanılmıştır:
+
+* **[keift/zapret](https://github.com/keift/zapret):** Bu paketin içerisinde yer alan (`/usr/share/naga-zapret/install.sh`) gelişmiş kurulum, otomatik dağıtım algılama ve DNS yapılandırma betiği **keift** deposundan alınmıştır. Katkıları için teşekkür ederiz.
+* **[bol-van/zapret](https://github.com/bol-van/zapret):** Derin Paket İncelemesi (DPI) engellemelerini aşan efsanevi orijinal Zapret çekirdeğinin geliştiricisi.
 
 ---
 
@@ -197,6 +210,7 @@ No terminal required at any step:
 ### ✨ Key Features
 
 * 🎨 **Pure Graphical Interface (Qt6):** Sleek, distraction-free dark control center.
+* 📦 **Automated Setup Engine:** Sourced from [keift/zapret](https://github.com/keift/zapret) for multi-distro setup & DNS configuration.
 * ⚡ **10x Live Diagnostic Ping Test:** Real HTTP packet tests with millisecond latency tracking.
 * 🛡️ **Polkit Integration (`pkexec`):** Secure native administrative prompts without CLI passwords.
 * 🧹 **Zero-Leftover Cleanup:** Automatically unlocks DNS files and restores standard internet settings.
@@ -242,6 +256,16 @@ chmod 755 naga-zapret-package/usr/share/naga-zapret/install.sh
 dpkg-deb --build naga-zapret-package naga-zapret-0.0.11_amd64.deb
 ```
 </details>
+
+---
+
+<a name="credits"></a>
+### 🙏 Credits & Acknowledgements
+
+Naga Zapret relies on excellent open-source work by the community:
+
+* **[keift/zapret](https://github.com/keift/zapret):** The automated installer, multi-distro detection, and DNS setup script bundled in this package (`/usr/share/naga-zapret/install.sh`) is sourced from **keift**'s repository. Special thanks for their work!
+* **[bol-van/zapret](https://github.com/bol-van/zapret):** The foundational core DPI bypass engine.
 
 ---
 
