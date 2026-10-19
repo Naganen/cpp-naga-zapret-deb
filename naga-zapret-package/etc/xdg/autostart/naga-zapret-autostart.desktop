@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Naga Zapret Baglanti Kontrolu
+Comment=Sistem acilisinda DPI bypass durumunu denetler
+Exec=/usr/bin/naga-zapret --startup-check
+Terminal=false
+Type=Application
+Categories=Utility;
+X-GNOME-Autostart-Delay=10

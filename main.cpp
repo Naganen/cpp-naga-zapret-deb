@@ -12,82 +12,92 @@
 #include <QFileInfo>
 #include <QTimer>
 #include <QElapsedTimer>
-#include <unistd.h> // geteuid() kontrolü için
+#include <QMessageBox>
+#include <unistd.h>
+
+// Arka planda çalışan başlangıç denetleyicisi
+class StartupChecker : public QObject {
+    Q_OBJECT
+    int attempts = 0;
+public:
+    StartupChecker(QObject *parent = nullptr) : QObject(parent) {}
+
+    void runCheck() {
+        // Ağın oturması için ilk denemeyi 5 saniye gecikmeli başlat
+        QTimer::singleShot(5000, this, &StartupChecker::pingTest);
+    }
+
+private:
+    void pingTest() {
+        attempts++;
+        auto *manager = new QNetworkAccessManager(this);
+        QNetworkRequest request((QUrl("https://discord.com")));
+        auto *reply = manager->get(request);
+
+        auto *timer = new QTimer(this);
+        timer->setSingleShot(true);
+
+        auto cleanup = [manager, reply, timer]() {
+            timer->stop();
+            timer->deleteLater();
+            reply->deleteLater();
+            manager->deleteLater();
+        };
+
+        connect(timer, &QTimer::timeout, [this, cleanup]() {
+            cleanup();
+            handleFailure();
+        });
+
+        connect(reply, &QNetworkReply::finished, [this, reply, timer, cleanup]() {
+            if (timer->isActive()) {
+                timer->stop();
+                if (reply->error() == QNetworkReply::NoError) {
+                    cleanup();
+                    QApplication::quit(); // Bağlantı var, sessizce kapan
+                } else {
+                    cleanup();
+                    handleFailure();
+                }
+            }
+        });
+
+        timer->start(3000); // 3 saniye timeout
+    }
+
+    void handleFailure() {
+        if (attempts < 3) {
+            // Başarısız olursa 5 saniye sonra tekrar dene (toplam 3 deneme)
+            QTimer::singleShot(5000, this, &StartupChecker::pingTest);
+        } else {
+            // 3 deneme de başarısızsa kullanıcıya sor
+            askUser();
+        }
+    }
+
+    void askUser() {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Naga Zapret - Bağlantı Hatası");
+        msgBox.setText("Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini (Zapret) yeniden başlatmak ister misiniz?");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.setStyleSheet("background-color: #2C2C2C; color: #F3F4F4; font-size: 13px;");
+
+        if (msgBox.exec() == QMessageBox::Yes) {
+            // Kullanıcı onaylarsa root izni isteyerek servisi yeniden başlat
+            QProcess::startDetached("pkexec", QStringList() << "systemctl" << "restart" << "zapret");
+        }
+        QApplication::quit();
+    }
+};
 
 class ZapretWindow : public QWidget {
+    Q_OBJECT
 public:
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
         resize(580, 650);
-
-        setStyleSheet(R"(
-            QWidget {
-                background-color: #2C2C2C;
-                color: #F3F4F4;
-                font-family: 'Segoe UI', Ubuntu, sans-serif;
-            }
-            QFrame#card {
-                background-color: #612D53;
-                border-radius: 10px;
-                border: 1px solid #853953;
-            }
-            QLabel {
-                font-size: 13px;
-                color: #F3F4F4;
-            }
-            QLabel#title {
-                font-size: 20px;
-                font-weight: bold;
-                color: #F3F4F4;
-            }
-            QLabel#status {
-                font-size: 14px;
-                font-weight: 600;
-                color: #F3F4F4;
-            }
-            QPushButton {
-                color: #F3F4F4;
-                font-weight: bold;
-                font-size: 13px;
-                padding: 10px;
-                border-radius: 8px;
-                border: none;
-            }
-            QPushButton#btnStart {
-                background-color: #853953;
-            }
-            QPushButton#btnStart:hover {
-                background-color: #a04565;
-            }
-            QPushButton#btnStop {
-                background-color: #44213a;
-                border: 1px solid #853953;
-            }
-            QPushButton#btnStop:hover {
-                background-color: #582b4b;
-            }
-            QPushButton#btnTest {
-                background-color: #612D53;
-                border: 1px solid #853953;
-            }
-            QPushButton#btnTest:hover {
-                background-color: #7a3869;
-            }
-            QPushButton:disabled {
-                background-color: #1e1e1e;
-                color: #666666;
-                border: none;
-            }
-            QTextEdit {
-                background-color: #1e1e1e;
-                color: #F3F4F4;
-                font-family: 'Consolas', 'Courier New', monospace;
-                font-size: 12px;
-                border: 1px solid #612D53;
-                border-radius: 8px;
-                padding: 8px;
-            }
-        )");
 
         auto *mainLayout = new QVBoxLayout(this);
         mainLayout->setSpacing(16);
@@ -174,9 +184,7 @@ private:
     QPushButton *btnStop;
     QPushButton *btnTest;
 
-    bool isRoot() {
-        return geteuid() == 0;
-    }
+    bool isRoot() { return geteuid() == 0; }
 
     void appendLog(const QString &text) {
         logArea->append(text);
@@ -216,10 +224,8 @@ private:
         });
 
         if (isRoot()) {
-            // Eğer uygulama zaten sudo/root ile başlatıldıysa doğrudan bash ile çalıştır
             process->start("bash", QStringList() << "-c" << cmd);
         } else {
-            // Normal kullanıcı olarak başlatıldıysa pkexec çağır
             process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
         }
     }
@@ -234,7 +240,6 @@ private:
         statusLabel->setText("Durum: Kuruluyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
-        // Çıktı gizlemeleri kaldırıldı ve interaktif sorular 'yes' komutu ile bypass edildi
         QString cmd = "export DEBIAN_FRONTEND=noninteractive && "
                       "echo '> Paketler güncelleniyor...' && "
                       "apt-get update -qq && "
@@ -243,9 +248,9 @@ private:
                       "mkdir -p /opt/zapret && "
                       "wget -q -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
                       "tar -xzf /tmp/zapret.tar.gz -C /tmp && cp -rf /tmp/zapret-v72.13/* /opt/zapret/ && "
-                      "echo '> Ön gereksinimler kuruluyor (Çıktılar aşağıdadır)...' && "
+                      "echo '> Ön gereksinimler kuruluyor...' && "
                       "yes '' | /opt/zapret/install_prereq.sh && "
-                      "echo '> İkili dosyalar (binaries) derleniyor/kopyalanıyor...' && "
+                      "echo '> İkili dosyalar (binaries) derleniyor...' && "
                       "/opt/zapret/install_bin.sh && "
                       "echo '> Yapılandırma ayarlanıyor...' && "
                       "cp -f /opt/zapret/config.default /opt/zapret/config && "
@@ -412,7 +417,54 @@ private:
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+
+    // Global Tema
+    app.setStyleSheet(R"(
+        QWidget {
+            background-color: #2C2C2C;
+            color: #F3F4F4;
+            font-family: 'Segoe UI', Ubuntu, sans-serif;
+        }
+        QFrame#card {
+            background-color: #612D53;
+            border-radius: 10px;
+            border: 1px solid #853953;
+        }
+        QLabel { font-size: 13px; color: #F3F4F4; }
+        QLabel#title { font-size: 20px; font-weight: bold; color: #F3F4F4; }
+        QLabel#status { font-size: 14px; font-weight: 600; color: #F3F4F4; }
+        QPushButton {
+            color: #F3F4F4; font-weight: bold; font-size: 13px;
+            padding: 10px; border-radius: 8px; border: none;
+        }
+        QPushButton#btnStart { background-color: #853953; }
+        QPushButton#btnStart:hover { background-color: #a04565; }
+        QPushButton#btnStop { background-color: #44213a; border: 1px solid #853953; }
+        QPushButton#btnStop:hover { background-color: #582b4b; }
+        QPushButton#btnTest { background-color: #612D53; border: 1px solid #853953; }
+        QPushButton#btnTest:hover { background-color: #7a3869; }
+        QPushButton:disabled { background-color: #1e1e1e; color: #666666; border: none; }
+        QTextEdit {
+            background-color: #1e1e1e; color: #F3F4F4;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px; border: 1px solid #612D53;
+            border-radius: 8px; padding: 8px;
+        }
+    )");
+
+    QStringList args = app.arguments();
+    
+    // Sistem Açılış Kontrolü Mekanizması
+    if (args.contains("--startup-check")) {
+        StartupChecker checker;
+        checker.runCheck();
+        return app.exec();
+    }
+
+    // Normal Arayüz Mekanizması
     ZapretWindow window;
     window.show();
     return app.exec();
 }
+
+#include "main.moc"

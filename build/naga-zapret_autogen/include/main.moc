@@ -1,0 +1,146 @@
+/****************************************************************************
+** Meta object code from reading C++ file 'main.cpp'
+**
+** Created by: The Qt Meta Object Compiler version 69 (Qt 6.10.2)
+**
+** WARNING! All changes made in this file will be lost!
+*****************************************************************************/
+
+#include <QtCore/qmetatype.h>
+
+#include <QtCore/qtmochelpers.h>
+
+#include <memory>
+
+
+#include <QtCore/qxptype_traits.h>
+#if !defined(Q_MOC_OUTPUT_REVISION)
+#error "The header file 'main.cpp' doesn't include <QObject>."
+#elif Q_MOC_OUTPUT_REVISION != 69
+#error "This file was generated using the moc from 6.10.2. It"
+#error "cannot be used with the include files from this version of Qt."
+#error "(The moc has changed too much.)"
+#endif
+
+#ifndef Q_CONSTINIT
+#define Q_CONSTINIT
+#endif
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
+QT_WARNING_DISABLE_GCC("-Wuseless-cast")
+namespace {
+struct qt_meta_tag_ZN14StartupCheckerE_t {};
+} // unnamed namespace
+
+template <> constexpr inline auto StartupChecker::qt_create_metaobjectdata<qt_meta_tag_ZN14StartupCheckerE_t>()
+{
+    namespace QMC = QtMocConstants;
+    QtMocHelpers::StringRefStorage qt_stringData {
+        "StartupChecker"
+    };
+
+    QtMocHelpers::UintData qt_methods {
+    };
+    QtMocHelpers::UintData qt_properties {
+    };
+    QtMocHelpers::UintData qt_enums {
+    };
+    return QtMocHelpers::metaObjectData<StartupChecker, qt_meta_tag_ZN14StartupCheckerE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+            qt_methods, qt_properties, qt_enums);
+}
+Q_CONSTINIT const QMetaObject StartupChecker::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14StartupCheckerE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14StartupCheckerE_t>.data,
+    qt_static_metacall,
+    nullptr,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN14StartupCheckerE_t>.metaTypes,
+    nullptr
+} };
+
+void StartupChecker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    auto *_t = static_cast<StartupChecker *>(_o);
+    (void)_t;
+    (void)_c;
+    (void)_id;
+    (void)_a;
+}
+
+const QMetaObject *StartupChecker::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *StartupChecker::qt_metacast(const char *_clname)
+{
+    if (!_clname) return nullptr;
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14StartupCheckerE_t>.strings))
+        return static_cast<void*>(this);
+    return QObject::qt_metacast(_clname);
+}
+
+int StartupChecker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    return _id;
+}
+namespace {
+struct qt_meta_tag_ZN12ZapretWindowE_t {};
+} // unnamed namespace
+
+template <> constexpr inline auto ZapretWindow::qt_create_metaobjectdata<qt_meta_tag_ZN12ZapretWindowE_t>()
+{
+    namespace QMC = QtMocConstants;
+    QtMocHelpers::StringRefStorage qt_stringData {
+        "ZapretWindow"
+    };
+
+    QtMocHelpers::UintData qt_methods {
+    };
+    QtMocHelpers::UintData qt_properties {
+    };
+    QtMocHelpers::UintData qt_enums {
+    };
+    return QtMocHelpers::metaObjectData<ZapretWindow, qt_meta_tag_ZN12ZapretWindowE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+            qt_methods, qt_properties, qt_enums);
+}
+Q_CONSTINIT const QMetaObject ZapretWindow::staticMetaObject = { {
+    QMetaObject::SuperData::link<QWidget::staticMetaObject>(),
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN12ZapretWindowE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN12ZapretWindowE_t>.data,
+    qt_static_metacall,
+    nullptr,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN12ZapretWindowE_t>.metaTypes,
+    nullptr
+} };
+
+void ZapretWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    auto *_t = static_cast<ZapretWindow *>(_o);
+    (void)_t;
+    (void)_c;
+    (void)_id;
+    (void)_a;
+}
+
+const QMetaObject *ZapretWindow::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *ZapretWindow::qt_metacast(const char *_clname)
+{
+    if (!_clname) return nullptr;
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN12ZapretWindowE_t>.strings))
+        return static_cast<void*>(this);
+    return QWidget::qt_metacast(_clname);
+}
+
+int ZapretWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QWidget::qt_metacall(_c, _id, _a);
+    return _id;
+}
+QT_WARNING_POP
