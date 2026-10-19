@@ -234,7 +234,7 @@ private:
         statusLabel->setText("Durum: Kuruluyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
-        // install.sh dosyasındaki mantığı doğrudan çalıştıran asenkron bash komutu
+        // Çıktı gizlemeleri kaldırıldı ve interaktif sorular 'yes' komutu ile bypass edildi
         QString cmd = "export DEBIAN_FRONTEND=noninteractive && "
                       "echo '> Paketler güncelleniyor...' && "
                       "apt-get update -qq && "
@@ -243,9 +243,10 @@ private:
                       "mkdir -p /opt/zapret && "
                       "wget -q -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
                       "tar -xzf /tmp/zapret.tar.gz -C /tmp && cp -rf /tmp/zapret-v72.13/* /opt/zapret/ && "
-                      "echo '> Ön gereksinimler kuruluyor...' && "
-                      "/opt/zapret/install_prereq.sh >/dev/null 2>&1 && "
-                      "/opt/zapret/install_bin.sh >/dev/null 2>&1 && "
+                      "echo '> Ön gereksinimler kuruluyor (Çıktılar aşağıdadır)...' && "
+                      "yes '' | /opt/zapret/install_prereq.sh && "
+                      "echo '> İkili dosyalar (binaries) derleniyor/kopyalanıyor...' && "
+                      "/opt/zapret/install_bin.sh && "
                       "echo '> Yapılandırma ayarlanıyor...' && "
                       "cp -f /opt/zapret/config.default /opt/zapret/config && "
                       "sed -i 's/^FWTYPE=.*/FWTYPE=nftables/' /opt/zapret/config && "
