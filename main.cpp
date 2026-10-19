@@ -10,6 +10,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QFileInfo>
+#include <QTimer>
 
 class ZapretWindow : public QWidget {
 public:
@@ -128,7 +129,7 @@ public:
         testLayout->setSpacing(10);
 
         auto *testHeaderLayout = new QHBoxLayout();
-        auto *lblTestTitle = new QLabel("Erişim Durumu (DPI Testi)", this);
+        auto *lblTestTitle = new QLabel("Erişim Durumu (10x Paket Testi)", this);
         lblTestTitle->setStyleSheet("font-weight: bold; color: #F3F4F4;");
         
         btnTest = new QPushButton("Bağlantı Testi Yap", this);
@@ -157,7 +158,7 @@ public:
         // Sinyal Bağlantıları
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
-        connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::runTests);
+        connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
 
         checkStatus();
     }
@@ -216,7 +217,7 @@ private:
                 logArea->append("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
                 statusLabel->setText("Durum: Çalışıyor");
                 statusLabel->setStyleSheet("color: #4ade80;");
-                runTests();
+                startMultiTests();
             } else {
                 logArea->append("> Hata: Kurulum başarısız oldu veya iptal edildi.");
                 checkStatus();
@@ -228,7 +229,6 @@ private:
     }
 
     void stopZapret() {
-        // 1. Sistemde Zapret olup olmadığının kontrolü
         bool exists = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
         if (!exists) {
             logArea->append("> Sistemde kurulu bir Zapret bulunamadı.");
@@ -242,7 +242,6 @@ private:
         statusLabel->setText("Durum: Kaldırılıyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
-        // Güvenli kaldırma komutu
         QString cmd = "if [ -f /opt/zapret/uninstall_easy.sh ]; then "
                       "echo -e 'Y\\n' | /opt/zapret/uninstall_easy.sh; "
                       "fi; "
@@ -275,45 +274,85 @@ private:
         process->start("pkexec", QStringList() << "bash" << "-c" << cmd);
     }
 
-    void runTests() {
-        btnTest->setEnabled(false);
-        logArea->append("> Bağlantı testleri yürütülüyor...");
+    void startMultiTests() {
+        setButtonsEnabled(false);
+        logArea->append("> Discord ve Roblox için 10'ar adet erişim isteği atılıyor...");
         
-        discordLabel->setText("• Discord: Test ediliyor...");
+        discordLabel->setText("• Discord: Test Ediliyor (0/10)");
         discordLabel->setStyleSheet("color: #f59e0b;");
-        robloxLabel->setText("• Roblox: Test ediliyor...");
-        robloxLabel->setStyleSheet("color: #f59e0b;");
+        robloxLabel->setText("• Roblox: Bekliyor...");
+        robloxLabel->setStyleSheet("color: #d1d5db;");
+
+        runPingTest("https://discord.com", 1, 0, [this](int discordSuccessCount) {
+            if (discordSuccessCount >= 5) {
+                discordLabel->setText(QString("• Discord: Erişilebilir (%1/10 OK)").arg(discordSuccessCount));
+                discordLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
+                logArea->append(QString("> [TEST OK] Discord erişilebilir (%1/10 başarı).").arg(discordSuccessCount));
+            } else {
+                discordLabel->setText(QString("• Discord: Erişilemedi (%1/10 OK)").arg(discordSuccessCount));
+                discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
+                logArea->append(QString("> [TEST HATA] Discord erişilemedi (%1/10 başarı).").arg(discordSuccessCount));
+            }
+
+            robloxLabel->setText("• Roblox: Test Ediliyor (0/10)");
+            robloxLabel->setStyleSheet("color: #f59e0b;");
+
+            runPingTest("https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
+                if (robloxSuccessCount >= 5) {
+                    robloxLabel->setText(QString("• Roblox: Erişilebilir (%1/10 OK)").arg(robloxSuccessCount));
+                    robloxLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
+                    logArea->append(QString("> [TEST OK] Roblox erişilebilir (%1/10 başarı).").arg(robloxSuccessCount));
+                } else {
+                    robloxLabel->setText(QString("• Roblox: Erişilemedi (%1/10 OK)").arg(robloxSuccessCount));
+                    robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
+                    logArea->append(QString("> [TEST HATA] Roblox erişilemedi (%1/10 başarı).").arg(robloxSuccessCount));
+                }
+                setButtonsEnabled(true);
+            });
+        });
+    }
+
+    void runPingTest(const QString &url, int currentAttempt, int successCount, std::function<void(int)> onComplete) {
+        if (currentAttempt > 10) {
+            onComplete(successCount);
+            return;
+        }
 
         auto *manager = new QNetworkAccessManager(this);
+        QNetworkRequest request((QUrl(url)));
+        request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
 
-        QNetworkReply *replyDiscord = manager->get(QNetworkRequest(QUrl("https://discord.com")));
-        connect(replyDiscord, &QNetworkReply::finished, [this, replyDiscord]() {
-            if (replyDiscord->error() == QNetworkReply::NoError) {
-                discordLabel->setText("• Discord: Erişilebilir (OK)");
-                discordLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                logArea->append("> [TEST OK] Discord bağlantısı başarılı.");
-            } else {
-                discordLabel->setText("• Discord: Erişilemedi");
-                discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                logArea->append("> [TEST HATA] Discord bağlantısı başarısız.");
-            }
-            replyDiscord->deleteLater();
+        QNetworkReply *reply = manager->get(request);
+
+        // 3 saniyelik zaman aşımı koruması
+        auto *timer = new QTimer(this);
+        timer->setSingleShot(true);
+
+        auto cleanup = [manager, reply, timer]() {
+            timer->stop();
+            timer->deleteLater();
+            reply->deleteLater();
+            manager->deleteLater();
+        };
+
+        connect(timer, &QTimer::timeout, [this, reply, url, currentAttempt, successCount, onComplete, cleanup]() {
+            reply->abort();
+            cleanup();
+            runPingTest(url, currentAttempt + 1, successCount, onComplete);
         });
 
-        QNetworkReply *replyRoblox = manager->get(QNetworkRequest(QUrl("https://www.roblox.com")));
-        connect(replyRoblox, &QNetworkReply::finished, [this, replyRoblox]() {
-            btnTest->setEnabled(true);
-            if (replyRoblox->error() == QNetworkReply::NoError) {
-                robloxLabel->setText("• Roblox: Erişilebilir (OK)");
-                robloxLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                logArea->append("> [TEST OK] Roblox bağlantısı başarılı.");
-            } else {
-                robloxLabel->setText("• Roblox: Erişilemedi");
-                robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                logArea->append("> [TEST HATA] Roblox bağlantısı başarısız.");
+        connect(reply, &QNetworkReply::finished, [this, reply, url, currentAttempt, successCount, onComplete, cleanup, timer]() {
+            if (timer->isActive()) {
+                timer->stop();
+                bool isSuccess = (reply->error() == QNetworkReply::NoError);
+                int newSuccessCount = successCount + (isSuccess ? 1 : 0);
+
+                cleanup();
+                runPingTest(url, currentAttempt + 1, newSuccessCount, onComplete);
             }
-            replyRoblox->deleteLater();
         });
+
+        timer->start(3000); // 3000 ms = 3 saniye
     }
 };
 

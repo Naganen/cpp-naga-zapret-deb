@@ -190,11 +190,14 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/bits/allocator.h \
   /usr/include/c++/15/bits/atomic_base.h \
   /usr/include/c++/15/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/15/bits/basic_ios.h \
+  /usr/include/c++/15/bits/basic_ios.tcc \
   /usr/include/c++/15/bits/basic_string.h \
   /usr/include/c++/15/bits/basic_string.tcc \
   /usr/include/c++/15/bits/char_traits.h \
   /usr/include/c++/15/bits/charconv.h \
   /usr/include/c++/15/bits/chrono.h \
+  /usr/include/c++/15/bits/codecvt.h \
   /usr/include/c++/15/bits/concept_check.h \
   /usr/include/c++/15/bits/cpp_type_traits.h \
   /usr/include/c++/15/bits/cxxabi_forced.h \
@@ -204,6 +207,10 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/bits/exception.h \
   /usr/include/c++/15/bits/exception_defines.h \
   /usr/include/c++/15/bits/exception_ptr.h \
+  /usr/include/c++/15/bits/fs_dir.h \
+  /usr/include/c++/15/bits/fs_fwd.h \
+  /usr/include/c++/15/bits/fs_ops.h \
+  /usr/include/c++/15/bits/fs_path.h \
   /usr/include/c++/15/bits/functexcept.h \
   /usr/include/c++/15/bits/functional_hash.h \
   /usr/include/c++/15/bits/hash_bytes.h \
@@ -211,9 +218,15 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/bits/hashtable_policy.h \
   /usr/include/c++/15/bits/invoke.h \
   /usr/include/c++/15/bits/ios_base.h \
+  /usr/include/c++/15/bits/istream.tcc \
   /usr/include/c++/15/bits/list.tcc \
   /usr/include/c++/15/bits/locale_classes.h \
   /usr/include/c++/15/bits/locale_classes.tcc \
+  /usr/include/c++/15/bits/locale_conv.h \
+  /usr/include/c++/15/bits/locale_facets.h \
+  /usr/include/c++/15/bits/locale_facets.tcc \
+  /usr/include/c++/15/bits/locale_facets_nonio.h \
+  /usr/include/c++/15/bits/locale_facets_nonio.tcc \
   /usr/include/c++/15/bits/localefwd.h \
   /usr/include/c++/15/bits/memory_resource.h \
   /usr/include/c++/15/bits/memoryfwd.h \
@@ -222,11 +235,14 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/bits/nested_exception.h \
   /usr/include/c++/15/bits/new_allocator.h \
   /usr/include/c++/15/bits/node_handle.h \
+  /usr/include/c++/15/bits/ostream.h \
+  /usr/include/c++/15/bits/ostream.tcc \
   /usr/include/c++/15/bits/ostream_insert.h \
   /usr/include/c++/15/bits/parse_numbers.h \
   /usr/include/c++/15/bits/postypes.h \
   /usr/include/c++/15/bits/predefined_ops.h \
   /usr/include/c++/15/bits/ptr_traits.h \
+  /usr/include/c++/15/bits/quoted_string.h \
   /usr/include/c++/15/bits/range_access.h \
   /usr/include/c++/15/bits/refwrap.h \
   /usr/include/c++/15/bits/requires_hosted.h \
@@ -234,6 +250,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/bits/shared_ptr_atomic.h \
   /usr/include/c++/15/bits/shared_ptr_base.h \
   /usr/include/c++/15/bits/specfun.h \
+  /usr/include/c++/15/bits/sstream.tcc \
   /usr/include/c++/15/bits/std_abs.h \
   /usr/include/c++/15/bits/std_function.h \
   /usr/include/c++/15/bits/stl_algo.h \
@@ -279,6 +296,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/climits \
   /usr/include/c++/15/clocale \
   /usr/include/c++/15/cmath \
+  /usr/include/c++/15/codecvt \
   /usr/include/c++/15/compare \
   /usr/include/c++/15/concepts \
   /usr/include/c++/15/cstddef \
@@ -288,6 +306,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/cstring \
   /usr/include/c++/15/ctime \
   /usr/include/c++/15/cwchar \
+  /usr/include/c++/15/cwctype \
   /usr/include/c++/15/debug/assertions.h \
   /usr/include/c++/15/debug/debug.h \
   /usr/include/c++/15/exception \
@@ -298,17 +317,23 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/ext/numeric_traits.h \
   /usr/include/c++/15/ext/string_conversions.h \
   /usr/include/c++/15/ext/type_traits.h \
+  /usr/include/c++/15/filesystem \
   /usr/include/c++/15/functional \
   /usr/include/c++/15/initializer_list \
+  /usr/include/c++/15/iomanip \
+  /usr/include/c++/15/ios \
   /usr/include/c++/15/iosfwd \
+  /usr/include/c++/15/istream \
   /usr/include/c++/15/iterator \
   /usr/include/c++/15/limits \
   /usr/include/c++/15/list \
+  /usr/include/c++/15/locale \
   /usr/include/c++/15/map \
   /usr/include/c++/15/memory \
   /usr/include/c++/15/new \
   /usr/include/c++/15/numeric \
   /usr/include/c++/15/optional \
+  /usr/include/c++/15/ostream \
   /usr/include/c++/15/pstl/execution_defs.h \
   /usr/include/c++/15/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15/pstl/glue_memory_defs.h \
@@ -316,6 +341,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/c++/15/pstl/pstl_config.h \
   /usr/include/c++/15/ratio \
   /usr/include/c++/15/set \
+  /usr/include/c++/15/sstream \
   /usr/include/c++/15/stdexcept \
   /usr/include/c++/15/stdlib.h \
   /usr/include/c++/15/streambuf \
@@ -348,6 +374,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
@@ -367,6 +394,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/strings.h \
   /usr/include/time.h \
   /usr/include/wchar.h \
+  /usr/include/wctype.h \
   /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
   /usr/include/x86_64-linux-gnu/asm/errno.h \
   /usr/include/x86_64-linux-gnu/asm/posix_types.h \
@@ -445,6 +473,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/atomic_word.h \
@@ -452,12 +481,17 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/c++/15/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/c++locale.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/cpu_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/15/bits/ctype_base.h \
+  /usr/include/x86_64-linux-gnu/c++/15/bits/ctype_inline.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/15/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/15/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/15/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QFileInfo \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QFlags \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
@@ -519,6 +553,9 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qendian.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qexceptionhandling.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfiledevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qfloat16.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h \
@@ -595,6 +632,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtenvironmentvariables.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtextstream.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtformat_impl.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimezone.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtnoop.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtpreprocessorsupport.h \
@@ -804,15 +842,11 @@ CMakeFiles/naga-zapret.dir/main.cpp.o:
 
 /usr/lib/x86_64-linux-gnu/libsystemd.so.0:
 
-/usr/lib/x86_64-linux-gnu/libssl.so.3:
-
 /usr/lib/x86_64-linux-gnu/librtmp.so.1:
 
 /usr/lib/x86_64-linux-gnu/libresolv.so.2:
 
 /usr/lib/x86_64-linux-gnu/libpsl.so.5:
-
-/usr/lib/x86_64-linux-gnu/libproxy/libpxbackend-1.0.so:
 
 /usr/lib/x86_64-linux-gnu/libpng16.so.16:
 
@@ -848,8 +882,6 @@ CMakeFiles/naga-zapret.dir/main.cpp.o:
 
 /usr/lib/x86_64-linux-gnu/libexpat.so.1:
 
-/usr/lib/x86_64-linux-gnu/libdouble-conversion.so.3:
-
 /usr/lib/x86_64-linux-gnu/libdbus-1.so.3:
 
 /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4:
@@ -874,10 +906,6 @@ CMakeFiles/naga-zapret.dir/main.cpp.o:
 
 /usr/lib/x86_64-linux-gnu/libOpenGL.so:
 
-/usr/lib/x86_64-linux-gnu/libmount.so.1:
-
-/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0:
-
 /usr/lib/x86_64-linux-gnu/libGLX.so:
 
 /usr/lib/x86_64-linux-gnu/libEGL.so.1:
@@ -895,8 +923,6 @@ CMakeFiles/naga-zapret.dir/main.cpp.o:
 /usr/lib/x86_64-linux-gnu/libc.so:
 
 /usr/lib/x86_64-linux-gnu/Scrt1.o:
-
-/lib64/ld-linux-x86-64.so.2:
 
 naga-zapret_autogen/mocs_compilation.cpp:
 
@@ -972,23 +998,11 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h:
 
-/usr/lib/x86_64-linux-gnu/libssh2.so.1:
-
-/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0:
-
-/usr/include/x86_64-linux-gnu/qt6/QtNetwork/qssl.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/15/crtendS.o:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qrgba64.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qrgb.h:
 
@@ -1028,8 +1042,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qyieldcpu.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qfont.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h:
@@ -1049,6 +1061,16 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h:
+
+/usr/lib/x86_64-linux-gnu/libssh2.so.1:
+
+/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0:
+
+/usr/include/x86_64-linux-gnu/qt6/QtNetwork/qssl.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qtimezone.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtdeprecationdefinitions.h:
 
@@ -1084,8 +1106,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qsize.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qset.h:
@@ -1118,29 +1138,75 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qnamespace.h:
 
-/usr/include/c++/15/bits/stream_iterator.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qmath.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qstringbuilder.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h:
 
-/usr/include/c++/15/bits/stl_vector.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qmalloc.h:
 
-/usr/include/c++/15/bits/functexcept.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qlogging.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs_impl.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h:
 
-/usr/include/c++/15/bits/stl_uninitialized.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h:
 
-/usr/include/c++/15/bits/stl_multimap.h:
+/usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkRequest:
 
-/usr/include/c++/15/bits/shared_ptr_base.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qlatin1stringview.h:
 
-/usr/include/c++/15/bits/stl_tempbuf.h:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qiterator.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qiterable.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevicebase.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/15/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qhash.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qtclasshelpermacros.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobalstatic.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qgenericatomic.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfunctionpointer.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfunctionaltools_impl.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfloat16.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h:
+
+/usr/lib/x86_64-linux-gnu/libssl.so.3:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfileinfo.h:
+
+/usr/lib/x86_64-linux-gnu/libdouble-conversion.so.3:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfiledevice.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qexceptionhandling.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qendian.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdebug.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h:
+
+/usr/include/c++/15/bits/fs_dir.h:
 
 /usr/lib/x86_64-linux-gnu/libQt6Network.so.6.10.2:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicTargetHelpers.cmake:
 
 /usr/include/c++/15/bits/stl_relops.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qfile.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QFlags:
 
@@ -1150,7 +1216,23 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicPluginHelpers_v2.cmake:
 
+/usr/lib/x86_64-linux-gnu/libproxy/libpxbackend-1.0.so:
+
+/usr/include/c++/15/bits/sstream.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qbindingstorage.h:
+
+/usr/include/c++/15/bits/shared_ptr_base.h:
+
+/usr/include/c++/15/bits/stl_multimap.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qobjectdefs_impl.h:
+
+/usr/include/c++/15/bits/stl_uninitialized.h:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicDependencyHelpers.cmake:
+
+/usr/include/c++/15/bits/quoted_string.h:
 
 /usr/include/c++/15/bits/ptr_traits.h:
 
@@ -1167,6 +1249,38 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/c++/15/bits/ostream_insert.h:
 
 /usr/include/c++/15/bits/monostate.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h:
+
+/usr/include/c++/15/filesystem:
+
+/usr/include/c++/15/bits/locale_facets.h:
+
+/lib64/ld-linux-x86-64.so.2:
+
+/usr/include/c++/15/bits/istream.tcc:
+
+/usr/include/c++/15/bits/functexcept.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qstringbuilder.h:
+
+/usr/include/c++/15/bits/stl_vector.h:
+
+/usr/include/c++/15/bits/fs_ops.h:
+
+/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6VersionlessAliasTargets.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h:
+
+/usr/include/c++/15/bits/fs_fwd.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:
+
+/usr/include/c++/15/cstddef:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontiguouscache.h:
 
 /usr/include/c++/15/bits/predefined_ops.h:
 
@@ -1198,6 +1312,10 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/15/bits/concept_check.h:
 
+/usr/include/c++/15/bits/codecvt.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtypeinfo.h:
 
 /usr/include/c++/15/bits/charconv.h:
@@ -1228,13 +1346,11 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6CoreTools/Qt6CoreToolsTargets-none.cmake:
 
-/usr/include/c++/15/bits/stl_raw_storage_iter.h:
-
-/usr/lib/x86_64-linux-gnu/libsasl2.so.2:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6ConfigExtras.cmake:
-
 /usr/include/assert.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h:
+
+/usr/include/asm-generic/errno.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtversionchecks.h:
 
@@ -1247,10 +1363,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess:
 
 /usr/include/alloca.h:
-
-/usr/include/c++/15/list:
-
-/usr/include/linux/stddef.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qforeach.h:
 
@@ -1276,13 +1388,11 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
+/usr/include/x86_64-linux-gnu/c++/15/bits/time_members.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qatomic_cxx11.h:
 
 /usr/include/c++/15/bits/node_handle.h:
-
-/usr/include/c++/15/bits/stl_bvector.h:
-
-/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 /usr/share/cmake-4.2/Modules/Platform/Linker/Linux-GNU-CXX.cmake:
 
@@ -1290,19 +1400,19 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/15/stdlib.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdarwinhelpers.h:
+
+/usr/include/c++/15/bits/list.tcc:
+
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h:
 
 /usr/share/cmake-4.2/Modules/Platform/Linker/GNU.cmake:
-
-/usr/include/stdlib.h:
 
 /usr/include/c++/15/bits/specfun.h:
 
 /usr/share/cmake-4.2/Modules/Internal/CMakeCommonLinkerInformation.cmake:
 
 /usr/include/c++/15/tr1/riemann_zeta.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
 
 /usr/include/c++/15/bits/nested_exception.h:
 
@@ -1330,8 +1440,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/linux/types.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qmath.h:
-
 /usr/share/cmake-4.2/Modules/Compiler/GNU-CXX.cmake:
 
 /usr/share/cmake-4.2/Modules/CMakeSystemSpecificInitialize.cmake:
@@ -1352,11 +1460,7 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/share/cmake-4.2/Modules/CMakeInitializeConfigs.cmake:
 
-/usr/include/c++/15/bits/stl_multiset.h:
-
-/usr/share/cmake-4.2/Modules/CheckCXXCompilerFlag.cmake:
-
-/usr/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake:
+/usr/include/x86_64-linux-gnu/c++/15/bits/ctype_inline.h:
 
 /usr/share/cmake-4.2/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake:
 
@@ -1368,11 +1472,15 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/15/bits/localefwd.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QFileInfo:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsAdditionalTargetInfo.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBusTools/Qt6DBusToolsTargets-none.cmake:
 
 /usr/include/sched.h:
+
+/usr/include/wctype.h:
 
 /usr/include/c++/15/bits/align.h:
 
@@ -1382,15 +1490,21 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake:
 
+/usr/include/c++/15/bits/locale_facets_nonio.tcc:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBus/Qt6DBusDependencies.cmake:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/15/bits/locale_facets.tcc:
+
+/usr/include/c++/15/bits/locale_conv.h:
 
 /usr/lib/x86_64-linux-gnu/libicudata.so.78:
 
 /usr/lib/gcc/x86_64-linux-gnu/15/include/stdbool.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomPythonHelpers.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qmalloc.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qsslconfiguration.h:
 
@@ -1410,13 +1524,11 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Config.cmake:
 
-/usr/include/c++/15/bits/stl_map.h:
-
-/usr/include/c++/15/ratio:
-
 /usr/include/c++/15/stdexcept:
 
 /usr/share/cmake-4.2/Modules/CMakeLanguageInformation.cmake:
+
+/usr/include/c++/15/ostream:
 
 /usr/include/c++/15/bits/basic_string.h:
 
@@ -1450,6 +1562,14 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/c++/15/bits/cxxabi_init_exception.h:
 
+/usr/lib/x86_64-linux-gnu/libsasl2.so.2:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6ConfigExtras.cmake:
+
+/usr/include/c++/15/bits/ostream.h:
+
+/usr/include/c++/15/bits/stl_raw_storage_iter.h:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBusTools/Qt6DBusToolsVersionlessTargets.cmake:
 
 /usr/include/c++/15/bits/atomic_base.h:
@@ -1478,6 +1598,14 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWalkLibsHelpers.cmake:
 
+/usr/include/c++/15/ratio:
+
+/usr/include/c++/15/bits/stl_map.h:
+
+/usr/include/c++/15/list:
+
+/usr/include/linux/stddef.h:
+
 /usr/share/cmake-4.2/Modules/Platform/Linux-Initialize.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
@@ -1488,7 +1616,13 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtFeatureCommon.cmake:
 
+/usr/include/c++/15/bits/ostream.tcc:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsDependencies.cmake:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/FindWrapVulkanHeaders.cmake:
+
+/usr/include/c++/15/bits/basic_ios.tcc:
 
 /usr/include/c++/15/pstl/pstl_config.h:
 
@@ -1522,10 +1656,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15/clocale:
 
-/usr/include/c++/15/bits/stl_numeric.h:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-none.cmake:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicFinalizerHelpers.cmake:
 
 /usr/share/cmake-4.2/Modules/Platform/Linux-GNU-CXX.cmake:
@@ -1544,11 +1674,7 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15/tr1/exp_integral.tcc:
 
-/usr/include/c++/15/bits/shared_ptr.h:
-
-/usr/include/c++/15/bits/hashtable_policy.h:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
+/usr/include/c++/15/bits/fs_path.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/FindWrapAtomic.cmake:
 
@@ -1556,13 +1682,13 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake:
 
+/usr/include/c++/15/bits/hashtable_policy.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomCpeHelpers.cmake:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtconfiginclude.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Dependencies.cmake:
-
-/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6VersionlessAliasTargets.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
 
@@ -1571,8 +1697,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicExternalProjectHelpers.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
-
-/usr/include/c++/15/bits/enable_special_members.h:
 
 /usr/share/cmake-4.2/Modules/CMakeCommonLanguageInclude.cmake:
 
@@ -1595,12 +1719,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicPluginHelpers.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake:
-
-/usr/include/c++/15/bits/stl_list.h:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6ConfigVersion.cmake:
 
@@ -1630,9 +1748,11 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6DBus/Qt6DBusConfig.cmake:
+/usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-none.cmake:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qiterable.h:
+/usr/include/c++/15/bits/stl_numeric.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6DBus/Qt6DBusConfig.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBus/Qt6DBusConfigVersionImpl.cmake:
 
@@ -1655,6 +1775,10 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/lib/gcc/x86_64-linux-gnu/15/include/stdarg.h:
 
 /usr/include/c++/15/bits/stl_iterator.h:
+
+/usr/include/c++/15/bits/stl_bvector.h:
+
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBusTools/Qt6DBusToolsConfig.cmake:
 
@@ -1685,6 +1809,14 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/c++/15/bits/new_allocator.h:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/os_defines.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h:
+
+/usr/include/c++/15/bits/stl_algobase.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomGenerationHelpers.cmake:
 
 /usr/include/c++/15/bits/hashtable.h:
 
@@ -1732,6 +1864,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicTestHelpers.cmake:
 
+/usr/include/errno.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6GuiTools/Qt6GuiToolsTargets-none.cmake:
+
 /usr/share/cmake-4.2/Modules/GNUInstallDirs.cmake:
 
 /usr/include/c++/15/bits/functional_hash.h:
@@ -1741,6 +1877,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/lib/x86_64-linux-gnu/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBusTools/Qt6DBusToolsDependencies.cmake:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0:
 
@@ -1760,8 +1900,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Gui/Qt6GuiTargets-none.cmake:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsDependencies.cmake:
-
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qnetworkaccessmanager.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake:
@@ -1772,10 +1910,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/bits/locale_classes.tcc:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
-
 /usr/share/cmake-4.2/Modules/Internal/CheckFlagCommonConfig.cmake:
 
 /usr/include/asm-generic/errno-base.h:
@@ -1784,9 +1918,17 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets/Qt6WidgetsTargets.cmake:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qdatastream.h:
+/usr/include/c++/15/bits/locale_facets_nonio.h:
 
-/usr/include/c++/15/bits/stl_set.h:
+/usr/lib/x86_64-linux-gnu/libbz2.so.1.0:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qmetaobject.h:
+
+/usr/include/x86_64-linux-gnu/c++/15/bits/atomic_word.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata_impl.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qalloc.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qmetatype.h:
 
@@ -1795,6 +1937,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/include/c++/15/tr1/poly_hermite.tcc:
 
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+
+/usr/include/c++/15/bits/enable_special_members.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Targets.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtextstream.h:
 
@@ -1806,7 +1952,25 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Targets.cmake:
+/usr/include/c++/15/bits/stl_list.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
+
+/usr/share/cmake-4.2/Modules/CheckCXXCompilerFlag.cmake:
+
+/usr/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake:
+
+/usr/include/c++/15/bits/stl_multiset.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdatastream.h:
+
+/usr/include/c++/15/bits/stl_set.h:
+
+/usr/include/c++/15/bits/stl_tempbuf.h:
+
+/usr/include/c++/15/bits/stream_iterator.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
@@ -1846,10 +2010,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/bits/version.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qtclasshelpermacros.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobalstatic.h:
-
 /usr/include/c++/15/cassert:
 
 /usr/include/c++/15/bits/char_traits.h:
@@ -1868,11 +2028,13 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/cmath:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6GuiTools/Qt6GuiToolsTargets-none.cmake:
+/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
-/usr/include/errno.h:
+/usr/include/x86_64-linux-gnu/qt6/QtNetwork/QSslConfiguration:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontiguouscache.h:
+/usr/include/c++/15/bits/exception.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/q23type_traits.h:
 
 /usr/share/cmake-4.2/Modules/Platform/Linux-GNU.cmake:
 
@@ -1882,13 +2044,15 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/cstdlib:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qfunctionaltools_impl.h:
-
 /usr/include/c++/15/cstring:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtpreprocessorsupport.h:
 
 /usr/include/c++/15/cwchar:
+
+/usr/include/c++/15/cwctype:
+
+/usr/include/x86_64-linux-gnu/asm/types.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qttranslation.h:
 
@@ -1912,17 +2076,41 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/initializer_list:
 
+/usr/include/c++/15/bits/shared_ptr.h:
+
+/usr/include/c++/15/iomanip:
+
+/usr/include/c++/15/vector:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/q20iterator.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h:
+
+/usr/include/c++/15/istream:
+
 /usr/include/c++/15/iterator:
 
 /usr/include/c++/15/limits:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/gthr-default.h:
 
+/usr/lib/x86_64-linux-gnu/libmount.so.1:
+
+/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0:
+
+/usr/include/c++/15/locale:
+
 /usr/include/c++/15/bits/refwrap.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtInstallPaths.cmake:
 
 /usr/include/c++/15/map:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qmargins.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainertools_impl.h:
+
+/usr/include/c++/15/memory:
 
 /usr/include/c++/15/new:
 
@@ -1948,21 +2136,13 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/c++locale.h:
 
-/usr/include/c++/15/bits/stl_algobase.h:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomGenerationHelpers.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qeventloop.h:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6DBus/Qt6DBusConfigVersion.cmake:
 
 /usr/include/c++/15/pstl/glue_numeric_defs.h:
 
-/usr/include/c++/15/streambuf:
+/usr/include/c++/15/sstream:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qexceptionhandling.h:
+/usr/include/c++/15/streambuf:
 
 /usr/include/c++/15/string:
 
@@ -1982,6 +2162,8 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreTargets-none.cmake:
 
+/usr/include/c++/15/codecvt:
+
 /usr/include/c++/15/system_error:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreConfig.cmake:
@@ -1998,10 +2180,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/tr1/special_function_util.h:
 
-/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qgenericatomic.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h:
 
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
@@ -2012,15 +2190,23 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/type_traits:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qdebug.h:
-
 /usr/include/c++/15/typeinfo:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h:
+
+/usr/include/c++/15/bits/basic_ios.h:
+
+/usr/include/c++/15/variant:
 
 /usr/include/c++/15/version:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkexports.h:
 
 /usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
+
+/usr/include/libintl.h:
 
 /usr/include/c++/15/tr1/gamma.tcc:
 
@@ -2066,12 +2252,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
 
-/usr/include/x86_64-linux-gnu/asm/types.h:
-
-/usr/include/c++/15/bits/list.tcc:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qdarwinhelpers.h:
-
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qarraydataops.h:
@@ -2100,13 +2280,11 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
 /usr/include/x86_64-linux-gnu/bits/mathcalls-macros.h:
 
 /usr/include/c++/15/bits/std_abs.h:
+
+/usr/include/c++/15/ios:
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
@@ -2156,14 +2334,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtNetwork/QSslConfiguration:
-
-/usr/include/c++/15/bits/exception.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/q23type_traits.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qstringconverter.h:
@@ -2212,10 +2382,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkRequest:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qlatin1stringview.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
@@ -2228,29 +2394,31 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qrgba64.h:
+
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qcursor.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare_impl.h:
+
 /usr/include/c++/15/cstdio:
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
-/usr/lib/x86_64-linux-gnu/libbz2.so.1.0:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qmetaobject.h:
-
-/usr/include/x86_64-linux-gnu/c++/15/bits/atomic_word.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qshareddata_impl.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qalloc.h:
-
 /usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/c++config.h:
+
+/usr/include/x86_64-linux-gnu/c++/15/bits/ctype_base.h:
 
 /usr/lib/x86_64-linux-gnu/libzstd.so.1:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtdeprecationmarkers.h:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/gthr.h:
+
+/usr/include/x86_64-linux-gnu/c++/15/bits/messages_members.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
@@ -2265,10 +2433,6 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QSharedDataPointer:
-
-/usr/include/c++/15/vector:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/q20iterator.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20type_traits.h:
 
@@ -2296,13 +2460,9 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qatomic.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qbindingstorage.h:
-
 /usr/include/c++/15/utility:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearray.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevicebase.h:
 
 /usr/lib/x86_64-linux-gnu/libldap.so.2:
 
@@ -2315,12 +2475,6 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qchar.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qcursor.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcompare_impl.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qiterator.h:
 
 /usr/share/cmake-4.2/Modules/Linker/GNU-CXX.cmake:
 
@@ -2337,43 +2491,3 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcryptographichash.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreapplication_platform.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h:
-
-/usr/include/c++/15/variant:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qendian.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qflags.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qfloat16.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qfunctionpointer.h:
-
-/usr/include/c++/15/cstddef:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/15/include/stddef.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qhash.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qlogging.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainertools_impl.h:
-
-/usr/include/c++/15/memory:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qmargins.h:
