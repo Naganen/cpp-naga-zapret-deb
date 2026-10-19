@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Naga Zapret GUI
+Comment=Zapret DPI Bypass UI by Naganen
+Exec=/usr/bin/naga-zapret
+Icon=network-transmit-receive
+Terminal=false
+Type=Application
+Categories=Network;Utility;
