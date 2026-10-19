@@ -502,6 +502,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QSharedDataPointer
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QUrl
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant
  /usr/include/x86_64-linux-gnu/qt6/QtCore/q17memory.h
@@ -634,6 +635,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtenvironmentvariables.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtextstream.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtformat_impl.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimer.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimezone.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtnoop.h

@@ -11,6 +11,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QTimer>
+#include <QElapsedTimer>
 
 class ZapretWindow : public QWidget {
 public:
@@ -172,6 +173,12 @@ private:
     QPushButton *btnStop;
     QPushButton *btnTest;
 
+    void appendLog(const QString &text) {
+        logArea->append(text);
+        logArea->ensureCursorVisible();
+        QApplication::processEvents(); // Arayüzün donmasını engeller, canlı günceller
+    }
+
     void setButtonsEnabled(bool enabled) {
         btnStart->setEnabled(enabled);
         btnStop->setEnabled(enabled);
@@ -191,7 +198,7 @@ private:
 
     void startZapret() {
         setButtonsEnabled(false);
-        logArea->append("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
+        appendLog("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
         statusLabel->setText("Durum: Kuruluyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
@@ -205,21 +212,21 @@ private:
 
         auto *process = new QProcess(this);
         connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
-            logArea->append(process->readAllStandardOutput());
+            appendLog(process->readAllStandardOutput().trimmed());
         });
         connect(process, &QProcess::readyReadStandardError, [this, process]() {
-            logArea->append(process->readAllStandardError());
+            appendLog(process->readAllStandardError().trimmed());
         });
 
         connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
-                logArea->append("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
+                appendLog("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
                 statusLabel->setText("Durum: Çalışıyor");
                 statusLabel->setStyleSheet("color: #4ade80;");
                 startMultiTests();
             } else {
-                logArea->append("> Hata: Kurulum başarısız oldu veya iptal edildi.");
+                appendLog("> Hata: Kurulum başarısız oldu veya iptal edildi.");
                 checkStatus();
             }
             process->deleteLater();
@@ -231,14 +238,14 @@ private:
     void stopZapret() {
         bool exists = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
         if (!exists) {
-            logArea->append("> Sistemde kurulu bir Zapret bulunamadı.");
+            appendLog("> Sistemde kurulu bir Zapret bulunamadı.");
             statusLabel->setText("Durum: Kurulu Değil");
             statusLabel->setStyleSheet("color: #d1d5db;");
             return;
         }
 
         setButtonsEnabled(false);
-        logArea->append("> Zapret durduruluyor ve sistemden kaldırılıyor...");
+        appendLog("> Zapret durduruluyor ve sistemden kaldırılıyor...");
         statusLabel->setText("Durum: Kaldırılıyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
@@ -252,20 +259,20 @@ private:
 
         auto *process = new QProcess(this);
         connect(process, &QProcess::readyReadStandardOutput, [this, process]() {
-            logArea->append(process->readAllStandardOutput());
+            appendLog(process->readAllStandardOutput().trimmed());
         });
         connect(process, &QProcess::readyReadStandardError, [this, process]() {
-            logArea->append(process->readAllStandardError());
+            appendLog(process->readAllStandardError().trimmed());
         });
 
         connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [this, process](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
-                logArea->append("> Zapret başarıyla durduruldu ve kaldırıldı.");
+                appendLog("> Zapret başarıyla durduruldu ve kaldırıldı.");
                 statusLabel->setText("Durum: Kaldırıldı");
                 statusLabel->setStyleSheet("color: #f87171;");
             } else {
-                logArea->append("> Hata: Kaldırma işlemi tamamlanamadı.");
+                appendLog("> Hata: Kaldırma işlemi tamamlanamadı.");
                 checkStatus();
             }
             process->deleteLater();
@@ -276,46 +283,55 @@ private:
 
     void startMultiTests() {
         setButtonsEnabled(false);
-        logArea->append("> Discord ve Roblox için 10'ar adet erişim isteği atılıyor...");
+        appendLog("=========================================");
+        appendLog("> Discord ve Roblox için 10'ar adet canlı erişim testi başlatılıyor...");
         
         discordLabel->setText("• Discord: Test Ediliyor (0/10)");
         discordLabel->setStyleSheet("color: #f59e0b;");
         robloxLabel->setText("• Roblox: Bekliyor...");
         robloxLabel->setStyleSheet("color: #d1d5db;");
 
-        runPingTest("https://discord.com", 1, 0, [this](int discordSuccessCount) {
+        runPingTest("Discord", "https://discord.com", 1, 0, [this](int discordSuccessCount) {
             if (discordSuccessCount >= 5) {
                 discordLabel->setText(QString("• Discord: Erişilebilir (%1/10 OK)").arg(discordSuccessCount));
                 discordLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                logArea->append(QString("> [TEST OK] Discord erişilebilir (%1/10 başarı).").arg(discordSuccessCount));
+                appendLog(QString("> [SONUÇ] Discord erişilebilir (%1/10 başarı).").arg(discordSuccessCount));
             } else {
                 discordLabel->setText(QString("• Discord: Erişilemedi (%1/10 OK)").arg(discordSuccessCount));
                 discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                logArea->append(QString("> [TEST HATA] Discord erişilemedi (%1/10 başarı).").arg(discordSuccessCount));
+                appendLog(QString("> [SONUÇ] Discord erişilemedi (%1/10 başarı).").arg(discordSuccessCount));
             }
 
+            appendLog("-----------------------------------------");
             robloxLabel->setText("• Roblox: Test Ediliyor (0/10)");
             robloxLabel->setStyleSheet("color: #f59e0b;");
 
-            runPingTest("https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
+            runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
                 if (robloxSuccessCount >= 5) {
                     robloxLabel->setText(QString("• Roblox: Erişilebilir (%1/10 OK)").arg(robloxSuccessCount));
                     robloxLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                    logArea->append(QString("> [TEST OK] Roblox erişilebilir (%1/10 başarı).").arg(robloxSuccessCount));
+                    appendLog(QString("> [SONUÇ] Roblox erişilebilir (%1/10 başarı).").arg(robloxSuccessCount));
                 } else {
                     robloxLabel->setText(QString("• Roblox: Erişilemedi (%1/10 OK)").arg(robloxSuccessCount));
                     robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                    logArea->append(QString("> [TEST HATA] Roblox erişilemedi (%1/10 başarı).").arg(robloxSuccessCount));
+                    appendLog(QString("> [SONUÇ] Roblox erişilemedi (%1/10 başarı).").arg(robloxSuccessCount));
                 }
+                appendLog("=========================================");
                 setButtonsEnabled(true);
             });
         });
     }
 
-    void runPingTest(const QString &url, int currentAttempt, int successCount, std::function<void(int)> onComplete) {
+    void runPingTest(const QString &serviceName, const QString &url, int currentAttempt, int successCount, std::function<void(int)> onComplete) {
         if (currentAttempt > 10) {
             onComplete(successCount);
             return;
+        }
+
+        if (serviceName == "Discord") {
+            discordLabel->setText(QString("• Discord: Test Ediliyor (%1/10)").arg(currentAttempt));
+        } else if (serviceName == "Roblox") {
+            robloxLabel->setText(QString("• Roblox: Test Ediliyor (%1/10)").arg(currentAttempt));
         }
 
         auto *manager = new QNetworkAccessManager(this);
@@ -324,35 +340,46 @@ private:
 
         QNetworkReply *reply = manager->get(request);
 
-        // 3 saniyelik zaman aşımı koruması
+        auto *elapsedTimer = new QElapsedTimer();
+        elapsedTimer->start();
+
         auto *timer = new QTimer(this);
         timer->setSingleShot(true);
 
-        auto cleanup = [manager, reply, timer]() {
+        auto cleanup = [manager, reply, timer, elapsedTimer]() {
             timer->stop();
             timer->deleteLater();
             reply->deleteLater();
             manager->deleteLater();
+            delete elapsedTimer;
         };
 
-        connect(timer, &QTimer::timeout, [this, reply, url, currentAttempt, successCount, onComplete, cleanup]() {
+        connect(timer, &QTimer::timeout, [this, reply, serviceName, url, currentAttempt, successCount, onComplete, cleanup]() {
             reply->abort();
+            appendLog(QString(" > [%1 %2/10] Zaman Aşımı (Timeout - 3000ms)").arg(serviceName).arg(currentAttempt));
             cleanup();
-            runPingTest(url, currentAttempt + 1, successCount, onComplete);
+            runPingTest(serviceName, url, currentAttempt + 1, successCount, onComplete);
         });
 
-        connect(reply, &QNetworkReply::finished, [this, reply, url, currentAttempt, successCount, onComplete, cleanup, timer]() {
+        connect(reply, &QNetworkReply::finished, [this, reply, serviceName, url, currentAttempt, successCount, onComplete, cleanup, timer, elapsedTimer]() {
             if (timer->isActive()) {
                 timer->stop();
+                qint64 responseTime = elapsedTimer->elapsed();
                 bool isSuccess = (reply->error() == QNetworkReply::NoError);
                 int newSuccessCount = successCount + (isSuccess ? 1 : 0);
 
+                if (isSuccess) {
+                    appendLog(QString(" > [%1 %2/10] Başarılı - Yanıt: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime));
+                } else {
+                    appendLog(QString(" > [%1 %2/10] Başarısız - Hata: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString()));
+                }
+
                 cleanup();
-                runPingTest(url, currentAttempt + 1, newSuccessCount, onComplete);
+                runPingTest(serviceName, url, currentAttempt + 1, newSuccessCount, onComplete);
             }
         });
 
-        timer->start(3000); // 3000 ms = 3 saniye
+        timer->start(3000); // 3 saniye timeout
     }
 };
 

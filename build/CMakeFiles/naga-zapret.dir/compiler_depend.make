@@ -500,6 +500,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QSharedDataPointer \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QUrl \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/q17memory.h \
@@ -632,6 +633,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtenvironmentvariables.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtextstream.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtformat_impl.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimer.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimezone.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtmetamacros.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qtnoop.h \
@@ -1054,8 +1056,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qtypes.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtresource.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel:
@@ -1071,6 +1071,10 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimezone.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qtypes.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qtimer.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtdeprecationdefinitions.h:
 
@@ -1375,6 +1379,10 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/c++/15/bits/erase_if.h:
 
 /usr/share/cmake-4.2/Modules/Platform/Linux.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerinfo.h:
 
@@ -1954,10 +1962,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/bits/stl_list.h:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcoreevent.h:
-
 /usr/share/cmake-4.2/Modules/CheckCXXCompilerFlag.cmake:
 
 /usr/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake:
@@ -2433,6 +2437,8 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QSharedDataPointer:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20type_traits.h:
 
