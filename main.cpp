@@ -15,62 +15,50 @@
 #include <QMessageBox>
 #include <unistd.h>
 
-// Arka planda çalışan başlangıç denetleyicisi
+// Arka plan başlatıcı ve ağ test edici
 class StartupChecker : public QObject {
     Q_OBJECT
     int attempts = 0;
 public:
     StartupChecker(QObject *parent = nullptr) : QObject(parent) {}
-
     void runCheck() {
-        // Ağın oturması için ilk denemeyi 5 saniye gecikmeli başlat
         QTimer::singleShot(5000, this, &StartupChecker::pingTest);
     }
-
 private:
     void pingTest() {
         attempts++;
         auto *manager = new QNetworkAccessManager(this);
         QNetworkRequest request((QUrl("https://discord.com")));
         auto *reply = manager->get(request);
-
         auto *timer = new QTimer(this);
         timer->setSingleShot(true);
 
         auto cleanup = [manager, reply, timer]() {
-            timer->stop();
-            timer->deleteLater();
-            reply->deleteLater();
-            manager->deleteLater();
+            timer->stop(); timer->deleteLater();
+            reply->deleteLater(); manager->deleteLater();
         };
 
         connect(timer, &QTimer::timeout, [this, cleanup]() {
-            cleanup();
-            handleFailure();
+            cleanup(); handleFailure();
         });
 
         connect(reply, &QNetworkReply::finished, [this, reply, timer, cleanup]() {
             if (timer->isActive()) {
                 timer->stop();
                 if (reply->error() == QNetworkReply::NoError) {
-                    cleanup();
-                    QApplication::quit(); // Bağlantı var, sessizce kapan
+                    cleanup(); QApplication::quit(); 
                 } else {
-                    cleanup();
-                    handleFailure();
+                    cleanup(); handleFailure();
                 }
             }
         });
-
-        timer->start(3000); // 3 saniye timeout
+        timer->start(3000);
     }
 
     void handleFailure() {
         if (attempts < 3) {
-            // Başarısız olursa 5 saniye sonra tekrar dene (toplam 3 deneme)
             QTimer::singleShot(5000, this, &StartupChecker::pingTest);
         } else {
-            // 3 deneme de başarısızsa kullanıcıya sor
             askUser();
         }
     }
@@ -78,15 +66,13 @@ private:
     void askUser() {
         QMessageBox msgBox;
         msgBox.setWindowTitle("Naga Zapret - Bağlantı Hatası");
-        msgBox.setText("Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini (Zapret) yeniden başlatmak ister misiniz?");
+        msgBox.setText("Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini yeniden kurmak/başlatmak ister misiniz?");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
         msgBox.setStyleSheet("background-color: #2C2C2C; color: #F3F4F4; font-size: 13px;");
 
         if (msgBox.exec() == QMessageBox::Yes) {
-            // Kullanıcı onaylarsa root izni isteyerek servisi yeniden başlat
-            QProcess::startDetached("pkexec", QStringList() << "systemctl" << "restart" << "zapret");
+            QProcess::startDetached("pkexec", QStringList() << "bash" << "/usr/share/naga-zapret/install.sh");
         }
         QApplication::quit();
     }
@@ -97,18 +83,16 @@ class ZapretWindow : public QWidget {
 public:
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
-        resize(580, 650);
+        resize(600, 680);
 
         auto *mainLayout = new QVBoxLayout(this);
         mainLayout->setSpacing(16);
         mainLayout->setContentsMargins(20, 20, 20, 20);
 
-        // Başlık
         auto *lblTitle = new QLabel("Naga Zapret Control Center", this);
         lblTitle->setObjectName("title");
         mainLayout->addWidget(lblTitle);
 
-        // Durum Kartı
         auto *statusCard = new QWidget(this);
         statusCard->setObjectName("card");
         auto *statusLayout = new QVBoxLayout(statusCard);
@@ -118,7 +102,6 @@ public:
         statusLayout->addWidget(statusLabel);
         mainLayout->addWidget(statusCard);
 
-        // Zapret Kontrol Butonları
         auto *actionLayout = new QHBoxLayout();
         actionLayout->setSpacing(10);
 
@@ -134,7 +117,6 @@ public:
         actionLayout->addWidget(btnStop);
         mainLayout->addLayout(actionLayout);
 
-        // Bağlantı Testleri Kartı
         auto *testCard = new QWidget(this);
         testCard->setObjectName("card");
         auto *testLayout = new QVBoxLayout(testCard);
@@ -162,12 +144,10 @@ public:
         testLayout->addWidget(robloxLabel);
         mainLayout->addWidget(testCard);
 
-        // Terminal Log Alanı
         logArea = new QTextEdit(this);
         logArea->setReadOnly(true);
         mainLayout->addWidget(logArea);
 
-        // Sinyal Bağlantıları
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
@@ -199,8 +179,7 @@ private:
     }
 
     void checkStatus() {
-        bool installed = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
-        if (installed) {
+        if (QFileInfo::exists("/opt/zapret")) {
             statusLabel->setText("Durum: Zapret Kurulu");
             statusLabel->setStyleSheet("color: #4ade80;");
         } else {
@@ -232,114 +211,50 @@ private:
 
     void startZapret() {
         setButtonsEnabled(false);
-        if (isRoot()) {
-            appendLog("> Kurulum başlatılıyor (Root yetkisi mevcut)...");
-        } else {
-            appendLog("> Kurulum başlatılıyor (Root yetkisi isteniyor)...");
-        }
+        appendLog("> Sizin özel kurulum betiğiniz (install.sh) başlatılıyor...");
         statusLabel->setText("Durum: Kuruluyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
-        // DNS onarımı başa, DNS kilitlemesi en sona alındı!
-        QString cmd = "export DEBIAN_FRONTEND=noninteractive; "
-                      "echo '> Ağ bağlantısı güvenceye alınıyor (Geçici DNS Onarımı)...'; "
-                      "chattr -i /etc/resolv.conf 2>/dev/null || true; "
-                      "rm -f /etc/resolv.conf; "
-                      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf; "
-                      "echo 'nameserver 1.1.1.1' >> /etc/resolv.conf; "
-
-                      "echo '> Paketler güncelleniyor...'; "
-                      "apt-get update -qq && apt-get install -y curl jq iptables nftables tar wget bind9-dnsutils dnscrypt-proxy; "
-
-                      "echo '> Zapret indiriliyor...'; "
-                      "mkdir -p /opt/zapret; "
-                      "wget -q -O /tmp/zapret.tar.gz https://github.com/bol-van/zapret/releases/download/v72.13/zapret-v72.13.tar.gz && "
-                      "tar -xzf /tmp/zapret.tar.gz -C /tmp && cp -rf /tmp/zapret-v72.13/* /opt/zapret/; "
-
-                      "echo '> Ön gereksinimler kuruluyor...'; "
-                      "yes '' | /opt/zapret/install_prereq.sh >/dev/null 2>&1; "
-                      "echo '> İkili dosyalar (binaries) hazırlanıyor...'; "
-                      "/opt/zapret/install_bin.sh >/dev/null 2>&1; "
-
-                      "echo '> DPI Aşma parametreleri yapılandırılıyor...'; "
-                      "cp -f /opt/zapret/config.default /opt/zapret/config; "
-                      "sed -i 's/^FWTYPE=.*/FWTYPE=nftables/' /opt/zapret/config; "
-                      "sed -i 's/^MODE=.*/MODE=nfqws/' /opt/zapret/config; "
-                      "sed -i 's|^NFQWS_OPT_DESYNC=.*|NFQWS_OPT_DESYNC=\"--dpi-desync=fake,split2 --dpi-desync-ttl=3\"|' /opt/zapret/config; "
-
-                      "echo '> Servis başlatılıyor...'; "
-                      "cp -f /opt/zapret/init.d/systemd/zapret.service /etc/systemd/system/zapret.service 2>/dev/null; "
-                      "systemctl daemon-reload 2>/dev/null; "
-                      "systemctl enable zapret 2>/dev/null; "
-                      "systemctl restart zapret 2>/dev/null; "
-
-                      "echo '> DNS Şifrelemesi (dnscrypt-proxy) kilitleniyor...'; "
-                      "systemctl stop systemd-resolved 2>/dev/null; "
-                      "systemctl disable systemd-resolved 2>/dev/null; "
-                      "mkdir -p /etc/dnscrypt-proxy; "
-                      "echo \"listen_addresses = ['127.0.0.1:53']\" > /etc/dnscrypt-proxy/dnscrypt-proxy.toml; "
-                      "echo \"server_names = ['cloudflare', 'google']\" >> /etc/dnscrypt-proxy/dnscrypt-proxy.toml; "
-                      "systemctl restart dnscrypt-proxy 2>/dev/null; "
-                      "sleep 2; " // DNSCrypt'in ayağa kalkması için 2 saniye bekle
-                      "echo 'nameserver 127.0.0.1' > /etc/resolv.conf; "
-                      "chattr +i /etc/resolv.conf 2>/dev/null || true; "
-                      "echo '> Kurulum tamamlandı!'";
+        // Gönderdiğiniz install.sh doğrudan tetiklenir, C++ hiçbir işleme müdahale etmez.
+        QString cmd = "chmod +x /usr/share/naga-zapret/install.sh && bash /usr/share/naga-zapret/install.sh";
 
         runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
-                appendLog("> Zapret başarıyla kuruldu ve hizmet başlatıldı!");
+                appendLog("> Kurulum scripti tamamlandı!");
                 statusLabel->setText("Durum: Çalışıyor");
                 statusLabel->setStyleSheet("color: #4ade80;");
                 startMultiTests();
             } else {
-                appendLog(QString("> Hata: Kurulum başarısız oldu (Çıkış Kodu: %1).").arg(exitCode));
+                appendLog(QString("> Hata: Script çalışmayı durdurdu (Çıkış: %1).").arg(exitCode));
                 checkStatus();
             }
         });
     }
 
     void stopZapret() {
-        bool exists = QFileInfo::exists("/opt/zapret") || QFileInfo::exists("/etc/systemd/system/zapret.service");
-        if (!exists) {
-            appendLog("> Sistemde kurulu bir Zapret bulunamadı.");
-            statusLabel->setText("Durum: Kurulu Değil");
-            statusLabel->setStyleSheet("color: #d1d5db;");
-            return;
-        }
-
         setButtonsEnabled(false);
-        appendLog("> Zapret durduruluyor ve sistemden kaldırılıyor...");
+        appendLog("> Zapret durduruluyor ve sistem temizleniyor...");
         statusLabel->setText("Durum: Kaldırılıyor...");
         statusLabel->setStyleSheet("color: #f59e0b;");
 
-        QString cmd = "export DEBIAN_FRONTEND=noninteractive; "
-                      "if [ -f /opt/zapret/uninstall_easy.sh ]; then "
-                      "echo -e 'Y\\n' | /opt/zapret/uninstall_easy.sh >/dev/null 2>&1; "
-                      "fi; "
-                      "systemctl stop zapret 2>/dev/null || true; "
-                      "systemctl disable zapret 2>/dev/null || true; "
+        // Sizin scriptteki mantığa uygun olarak DNS açma ve Zapret silme
+        QString cmd = "echo -e 'Y\\n\\n' | /opt/zapret/uninstall_easy.sh 2>/dev/null; "
                       "rm -rf /opt/zapret; "
-                      "rm -f /etc/systemd/system/zapret.service; "
-                      "echo '> DNS kilidi kaldırılıyor ve ağ normale döndürülüyor...'; "
+                      "echo '> DNS kilidi çözülüyor...'; "
                       "chattr -i /etc/resolv.conf 2>/dev/null || true; "
                       "rm -f /etc/resolv.conf; "
-                      "systemctl enable systemd-resolved 2>/dev/null || true; "
-                      "systemctl start systemd-resolved 2>/dev/null || true; "
-                      "ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf 2>/dev/null || echo 'nameserver 8.8.8.8' > /etc/resolv.conf; "
+                      "echo 'nameserver 8.8.8.8' > /etc/resolv.conf; "
+                      "echo 'nameserver 1.1.1.1' >> /etc/resolv.conf; "
                       "systemctl stop dnscrypt-proxy 2>/dev/null || true; "
-                      "echo '> Kaldırma işlemi tamamlandı!'";
+                      "echo '> Sistem temizlendi!'";
 
         runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
-            if (exitCode == 0) {
-                appendLog("> Zapret başarıyla durduruldu ve DNS normale döndürüldü.");
-                statusLabel->setText("Durum: Kaldırıldı");
-                statusLabel->setStyleSheet("color: #f87171;");
-            } else {
-                appendLog(QString("> Hata: Kaldırma işlemi tamamlanamadı (Çıkış Kodu: %1).").arg(exitCode));
-                checkStatus();
-            }
+            appendLog("> Zapret kaldırıldı. İnternet normale döndü.");
+            statusLabel->setText("Durum: Kaldırıldı");
+            statusLabel->setStyleSheet("color: #f87171;");
+            checkStatus();
         });
     }
 
@@ -385,35 +300,22 @@ private:
     }
 
     void runPingTest(const QString &serviceName, const QString &url, int currentAttempt, int successCount, std::function<void(int)> onComplete) {
-        if (currentAttempt > 10) {
-            onComplete(successCount);
-            return;
-        }
+        if (currentAttempt > 10) { onComplete(successCount); return; }
 
-        if (serviceName == "Discord") {
-            discordLabel->setText(QString("• Discord: Test Ediliyor (%1/10)").arg(currentAttempt));
-        } else if (serviceName == "Roblox") {
-            robloxLabel->setText(QString("• Roblox: Test Ediliyor (%1/10)").arg(currentAttempt));
-        }
+        if (serviceName == "Discord") discordLabel->setText(QString("• Discord: Test Ediliyor (%1/10)").arg(currentAttempt));
+        else if (serviceName == "Roblox") robloxLabel->setText(QString("• Roblox: Test Ediliyor (%1/10)").arg(currentAttempt));
 
         auto *manager = new QNetworkAccessManager(this);
         QNetworkRequest request((QUrl(url)));
         request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
 
         QNetworkReply *reply = manager->get(request);
-
-        auto *elapsedTimer = new QElapsedTimer();
-        elapsedTimer->start();
-
-        auto *timer = new QTimer(this);
-        timer->setSingleShot(true);
+        auto *elapsedTimer = new QElapsedTimer(); elapsedTimer->start();
+        auto *timer = new QTimer(this); timer->setSingleShot(true);
 
         auto cleanup = [manager, reply, timer, elapsedTimer]() {
-            timer->stop();
-            timer->deleteLater();
-            reply->deleteLater();
-            manager->deleteLater();
-            delete elapsedTimer;
+            timer->stop(); timer->deleteLater();
+            reply->deleteLater(); manager->deleteLater(); delete elapsedTimer;
         };
 
         connect(timer, &QTimer::timeout, [this, reply, serviceName, url, currentAttempt, successCount, onComplete, cleanup]() {
@@ -430,43 +332,26 @@ private:
                 bool isSuccess = (reply->error() == QNetworkReply::NoError);
                 int newSuccessCount = successCount + (isSuccess ? 1 : 0);
 
-                if (isSuccess) {
-                    appendLog(QString(" > [%1 %2/10] Başarılı - Yanıt: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime));
-                } else {
-                    appendLog(QString(" > [%1 %2/10] Başarısız - Hata: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString()));
-                }
+                if (isSuccess) appendLog(QString(" > [%1 %2/10] Başarılı - Yanıt: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime));
+                else appendLog(QString(" > [%1 %2/10] Başarısız - Hata: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString()));
 
                 cleanup();
                 runPingTest(serviceName, url, currentAttempt + 1, newSuccessCount, onComplete);
             }
         });
-
         timer->start(3000);
     }
 };
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-
-    // Global Tema
     app.setStyleSheet(R"(
-        QWidget {
-            background-color: #2C2C2C;
-            color: #F3F4F4;
-            font-family: 'Segoe UI', Ubuntu, sans-serif;
-        }
-        QFrame#card {
-            background-color: #612D53;
-            border-radius: 10px;
-            border: 1px solid #853953;
-        }
+        QWidget { background-color: #2C2C2C; color: #F3F4F4; font-family: 'Segoe UI', Ubuntu, sans-serif; }
+        QFrame#card { background-color: #612D53; border-radius: 10px; border: 1px solid #853953; }
         QLabel { font-size: 13px; color: #F3F4F4; }
         QLabel#title { font-size: 20px; font-weight: bold; color: #F3F4F4; }
         QLabel#status { font-size: 14px; font-weight: 600; color: #F3F4F4; }
-        QPushButton {
-            color: #F3F4F4; font-weight: bold; font-size: 13px;
-            padding: 10px; border-radius: 8px; border: none;
-        }
+        QPushButton { color: #F3F4F4; font-weight: bold; font-size: 13px; padding: 10px; border-radius: 8px; border: none; }
         QPushButton#btnStart { background-color: #853953; }
         QPushButton#btnStart:hover { background-color: #a04565; }
         QPushButton#btnStop { background-color: #44213a; border: 1px solid #853953; }
@@ -474,24 +359,16 @@ int main(int argc, char *argv[]) {
         QPushButton#btnTest { background-color: #612D53; border: 1px solid #853953; }
         QPushButton#btnTest:hover { background-color: #7a3869; }
         QPushButton:disabled { background-color: #1e1e1e; color: #666666; border: none; }
-        QTextEdit {
-            background-color: #1e1e1e; color: #F3F4F4;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 12px; border: 1px solid #612D53;
-            border-radius: 8px; padding: 8px;
-        }
+        QTextEdit { background-color: #1e1e1e; color: #F3F4F4; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; border: 1px solid #612D53; border-radius: 8px; padding: 8px; }
     )");
 
     QStringList args = app.arguments();
-    
-    // Sistem Açılış Kontrolü Mekanizması
     if (args.contains("--startup-check")) {
         StartupChecker checker;
         checker.runCheck();
         return app.exec();
     }
 
-    // Normal Arayüz Mekanizması
     ZapretWindow window;
     window.show();
     return app.exec();
