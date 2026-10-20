@@ -28,38 +28,36 @@
 #include <QPalette>
 #include <QMoveEvent>
 #include <QCloseEvent>
+#include <QLocalServer>
+#include <QLocalSocket>
 #include <unistd.h>
 
 // Sistem temasına (açık/koyu) ve dosya konumlarına göre logo yükleyici
 static QIcon getAppIcon() {
-    bool isDark = QApplication::palette().color(QPalette::Window).lightness() < 128;
+    bool isLight = QApplication::palette().color(QPalette::Window).lightness() > 190;
     QString whiteLogo = "naga-zapret-logo-white.svg";
     QString blackLogo = "naga-zapret-logo.svg";
-    QString primary = isDark ? whiteLogo : blackLogo;
-    QString secondary = isDark ? blackLogo : whiteLogo;
+    QString primary = isLight ? blackLogo : whiteLogo;
+    QString secondary = isLight ? whiteLogo : blackLogo;
 
     QStringList searchDirs = {
+        "/usr/share/icons/hicolor/scalable/apps/",
+        "/usr/share/pixmaps/",
         "/usr/share/naga-zapret/",
         "/usr/share/naga-zapret/icons/",
-        "/usr/share/icons/hicolor/scalable/apps/",
         QCoreApplication::applicationDirPath() + "/",
         QCoreApplication::applicationDirPath() + "/assets/",
         QDir::currentPath() + "/",
         QDir::currentPath() + "/assets/"
     };
 
-    // 1. Tercih edilen tema rengindeki logoyu ara
-    for (const QString &dir : searchDirs) {
-        if (QFileInfo::exists(dir + primary)) {
-            QIcon icon(dir + primary);
-            if (!icon.isNull()) return icon;
-        }
-    }
-    // 2. Alternatif logoyu ara
-    for (const QString &dir : searchDirs) {
-        if (QFileInfo::exists(dir + secondary)) {
-            QIcon icon(dir + secondary);
-            if (!icon.isNull()) return icon;
+    QStringList candidates = { primary, "naga-zapret.svg", "naga-zapret-symbolic.svg", secondary, "naga-zapret-dark.svg" };
+    for (const QString &candidate : candidates) {
+        for (const QString &dir : searchDirs) {
+            if (QFileInfo::exists(dir + candidate)) {
+                QIcon icon(dir + candidate);
+                if (!icon.isNull()) return icon;
+            }
         }
     }
 
@@ -1297,15 +1295,75 @@ int main(int argc, char *argv[]) {
         }
     )");
 
-    QStringList args = app.arguments();
-    if (args.contains("--startup-check")) {
+        QStringList args = app.arguments();
+    bool isStartupCheck = args.contains("--startup-check");
+
+    const QString serverName = "naga-zapret-single-instance-" + QString::number(geteuid());
+
+    // Çalışan başka bir kopya var mı kontrol et
+    QLocalSocket socket;
+    socket.connectToServer(serverName);
+    if (socket.waitForConnected(500)) {
+        // Zaten arka planda veya açık çalışan bir kopya var!
+        // Eğer bu kopya normal GUI olarak açıldıysa, mevcut kopyaya "SHOW" komutu gönder
+        if (!isStartupCheck) {
+            socket.write("SHOW");
+            socket.waitForBytesWritten(1000);
+        }
+        socket.disconnectFromServer();
+        return 0; // Yeni kopyayı sonlandır, mevcut kopya ekrana gelsin
+    }
+
+    // İlk kopya: Eski soket artık dosyasını sil ve sunucuyu başlat
+    QLocalServer::removeServer(serverName);
+    auto *localServer = new QLocalServer(&app);
+    localServer->listen(serverName);
+
+    if (isStartupCheck) {
         StartupChecker checker;
         checker.runCheck();
+
+        ZapretWindow *guiWindow = nullptr;
+        QObject::connect(localServer, &QLocalServer::newConnection, [&guiWindow, localServer]() {
+            QLocalSocket *client = localServer->nextPendingConnection();
+            if (!client) return;
+            QObject::connect(client, &QLocalSocket::readyRead, [&guiWindow, client]() {
+                QString cmd = QString::fromUtf8(client->readAll()).trimmed();
+                if (cmd == "SHOW") {
+                    if (!guiWindow) {
+                        guiWindow = new ZapretWindow();
+                    }
+                    guiWindow->showNormal();
+                    guiWindow->raise();
+                    guiWindow->activateWindow();
+                }
+                client->disconnectFromServer();
+                client->deleteLater();
+            });
+        });
+
         return app.exec();
     }
 
     ZapretWindow window;
     window.show();
+
+    // Normal GUI modunda arka plandayken yeni kopya açılınca olan pencereyi ekrana getir
+    QObject::connect(localServer, &QLocalServer::newConnection, [&window, localServer]() {
+        QLocalSocket *client = localServer->nextPendingConnection();
+        if (!client) return;
+        QObject::connect(client, &QLocalSocket::readyRead, [&window, client]() {
+            QString cmd = QString::fromUtf8(client->readAll()).trimmed();
+            if (cmd == "SHOW") {
+                window.showNormal();
+                window.raise();
+                window.activateWindow();
+            }
+            client->disconnectFromServer();
+            client->deleteLater();
+        });
+    });
+
     return app.exec();
 }
 
