@@ -27,17 +27,15 @@ jobs:
 
       - name: Prepare DEB Package Directory
         run: |
-          # Derlenen binary dosyasını paket klasörüne kopyala
+          # Temizlik ve kopyalama
           mkdir -p naga-zapret-package/usr/bin
           cp build/naga-zapret naga-zapret-package/usr/bin/
 
-          chmod +x naga-zapret-package/usr/bin/naga-zapret
-          chmod +x naga-zapret-package/usr/share/naga-zapret/install.sh
-          
-          # İzinleri Linux standartlarına sabitle
-          chmod 755 naga-zapret-package/DEBIAN
-          chmod 644 naga-zapret-package/DEBIAN/control
-          chmod +x naga-zapret-package/usr/share/naga-zapret/install.sh
+          # Dosya ve klasör izinlerini dpkg paketlemesinden hemen önce kesin olarak ayarla
+          sudo chmod 755 naga-zapret-package/usr/bin/naga-zapret
+          sudo chmod +x naga-zapret-package/usr/share/naga-zapret/install.sh
+          sudo chmod 755 naga-zapret-package/DEBIAN
+          sudo chmod 644 naga-zapret-package/DEBIAN/control
 
       - name: Build DEB Package and Move to packages/
         run: |
