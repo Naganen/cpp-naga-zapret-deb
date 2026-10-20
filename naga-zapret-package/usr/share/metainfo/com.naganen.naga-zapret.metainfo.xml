@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.naganen.naga-zapret</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Naga Zapret</name>
+  <summary>Modern Graphical Control Center for Zapret DPI Bypass</summary>
+  <summary xml:lang="tr">Zapret DPI Sansür Aşma Grafik Kontrol Merkezi</summary>
+  <description>
+    <p>
+      Naga Zapret is an intuitive desktop application built with Qt6 designed to bypass Deep Packet Inspection (DPI) censorship on Linux systems without requiring terminal commands or manual DNS configuration.
+    </p>
+    <p xml:lang="tr">
+      Naga Zapret, Linux üzerinde terminal komutlarına veya karmaşık DNS ayarlarına gerek kalmadan Discord, Roblox gibi servislere uygulanan DPI engellemelerini tek tıkla aşmanızı sağlayan Qt6 tabanlı modern bir kontrol merkezidir.
+    </p>
+    <ul>
+      <li>Single-click automated installation and cleanup of the Zapret service</li>
+      <li>Live 10x packet connectivity diagnostics for Discord and Roblox</li>
+      <li>Snappable standalone real-time log terminal</li>
+      <li>System tray integration with background health checks</li>
+      <li>Bilingual interface (Turkish and English)</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">naga-zapret.desktop</launchable>
+  <icon type="stock">naga-zapret</icon>
+  <url type="homepage">https://github.com/Naganen/naga-zapret</url>
+  <developer_name>Alper YILDIRIM (Naganen)</developer_name>
+  <provides>
+    <binary>naga-zapret</binary>
+  </provides>
+  <categories>
+    <category>Network</category>
+    <category>Utility</category>
+  </categories>
+</component>
+

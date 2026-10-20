@@ -21,9 +21,61 @@
 #include <QColor>
 #include <QPixmap>
 #include <QIcon>
+#include <QSystemTrayIcon>
+#include <QMenu>
+#include <QAction>
+#include <QDir>
+#include <QPalette>
 #include <QMoveEvent>
 #include <QCloseEvent>
+#include <QLocalServer>
+#include <QLocalSocket>
 #include <unistd.h>
+
+// Sistem temasına (açık/koyu) ve dosya konumlarına göre logo yükleyici
+static QIcon getAppIcon() {
+    bool isLight = QApplication::palette().color(QPalette::Window).lightness() > 190;
+    bool isDark = !isLight;
+    QString whiteLogo = "naga-zapret-logo-white.svg";
+    QString blackLogo = "naga-zapret-logo.svg";
+    QString primary = isLight ? blackLogo : whiteLogo;
+    QString secondary = isLight ? whiteLogo : blackLogo;
+
+    QStringList searchDirs = {
+        "/usr/share/icons/hicolor/scalable/apps/",
+        "/usr/share/pixmaps/",
+        "/usr/share/naga-zapret/",
+        "/usr/share/naga-zapret/icons/",
+        QCoreApplication::applicationDirPath() + "/",
+        QCoreApplication::applicationDirPath() + "/assets/",
+        QDir::currentPath() + "/",
+        QDir::currentPath() + "/assets/"
+    };
+
+    QStringList candidates = { primary, "naga-zapret.svg", "naga-zapret-symbolic.svg", secondary, "naga-zapret-dark.svg" };
+    for (const QString &candidate : candidates) {
+        for (const QString &dir : searchDirs) {
+            if (QFileInfo::exists(dir + candidate)) {
+                QIcon icon(dir + candidate);
+                if (!icon.isNull()) return icon;
+            }
+        }
+    }
+
+    // 3. Dosyalar henüz dizine eklenmemişse vektörel fallback simgesi üret
+    QPixmap pix(64, 64);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(QColor(isDark ? "#96335d" : "#7d2a4e"));
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(4, 4, 56, 56, 12, 12);
+    p.setBrush(Qt::white);
+    QPolygonF triangle;
+    triangle << QPointF(24, 18) << QPointF(46, 32) << QPointF(24, 46);
+    p.drawPolygon(triangle);
+    return QIcon(pix);
+}
 
 // Harici font veya resim dosyası gerektirmeyen vektörel ikon üreticileri
 static QPixmap createGlobePixmap(int size, const QColor &color) {
@@ -149,7 +201,6 @@ protected:
 };
 
 // Ana pencerenin yanına yapışan (snap olan) Canlı Günlük Penceresi
-// Bağımsız Qt::Window olarak focus/etkileşim sorunsuz çalışır, closeEvent ignore edilerek hızlı gizlenir.
 class LogWindow : public QWidget {
     Q_OBJECT
     QTextEdit *logArea;
@@ -161,6 +212,7 @@ public:
         setWindowTitle("Naga Zapret - Live Logs");
         resize(440, 480);
         setFocusPolicy(Qt::StrongFocus);
+        setWindowIcon(getAppIcon());
 
         auto *layout = new QVBoxLayout(this);
         layout->setContentsMargins(14, 14, 14, 14);
@@ -205,25 +257,104 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) override {
-        // Pencereyi yok etmek yerine gizleyerek WSLg'deki destroy gecikmesini önler
         event->ignore();
         hide();
         if (onCloseCallback) onCloseCallback();
     }
 };
 
-// Arka plan başlatıcı ve ağ test edici
+// Arka plan başlatıcı ve ağ test edici (--startup-check argümanı için)
 class StartupChecker : public QObject {
     Q_OBJECT
     int attempts = 0;
+    bool isEn = false;
+    QSystemTrayIcon *trayIcon = nullptr;
+    QMenu *trayMenu = nullptr;
+    QAction *actStatus = nullptr;
 public:
-    StartupChecker(QObject *parent = nullptr) : QObject(parent) {}
+    StartupChecker(QObject *parent = nullptr) : QObject(parent) {
+        isEn = !QLocale::system().name().startsWith("tr", Qt::CaseInsensitive);
+        setupTrayIcon();
+    }
+
+    void setupTrayIcon() {
+        trayIcon = new QSystemTrayIcon(getAppIcon(), this);
+        trayMenu = new QMenu();
+        trayMenu->setStyleSheet(R"(
+            QMenu { 
+                background-color: #1e1b24; 
+                color: #f1f5f9; 
+                border: 1px solid #3d2438; 
+                padding: 4px; 
+                border-radius: 4px; 
+                font-family: 'Segoe UI', Ubuntu, sans-serif;
+            }
+            QMenu::item { 
+                padding: 7px 22px; 
+                font-size: 12px; 
+                border-radius: 3px; 
+            }
+            QMenu::item:selected { 
+                background-color: #96335d; 
+                color: #ffffff; 
+            }
+            QMenu::separator { 
+                height: 1px; 
+                background: #3d2438; 
+                margin: 4px 8px; 
+            }
+        )");
+
+        actStatus = trayMenu->addAction(isEn ? "Status: Checking connection..." : "Durum: Bağlantı denetleniyor...");
+        actStatus->setEnabled(false);
+
+        trayMenu->addSeparator();
+
+        auto *actOpen = trayMenu->addAction(isEn ? "Open Naga Zapret" : "Naga Zapret'i Aç");
+        connect(actOpen, &QAction::triggered, this, []() {
+            QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
+        });
+
+        auto *actRecheck = trayMenu->addAction(isEn ? "Re-check Connection" : "Yeniden Kontrol Et");
+        connect(actRecheck, &QAction::triggered, this, [this]() {
+            attempts = 0;
+            updateTrayStatus(isEn ? "Status: Checking... (1/3)" : "Durum: Kontrol ediliyor... (1/3)");
+            pingTest();
+        });
+
+        trayMenu->addSeparator();
+
+        auto *actQuit = trayMenu->addAction(isEn ? "Exit Check" : "Kontrolü Kapat");
+        connect(actQuit, &QAction::triggered, qApp, &QApplication::quit);
+
+        trayIcon->setContextMenu(trayMenu);
+        trayIcon->setToolTip(isEn ? "Naga Zapret - Background Connection Check" : "Naga Zapret - Arka Plan Bağlantı Denetimi");
+        trayIcon->show();
+
+        connect(trayIcon, &QSystemTrayIcon::activated, this, [](QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::DoubleClick || reason == QSystemTrayIcon::Trigger) {
+                QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
+            }
+        });
+    }
+
+    void updateTrayStatus(const QString &text) {
+        if (actStatus) actStatus->setText(text);
+        if (trayIcon) trayIcon->setToolTip(QString("Naga Zapret - %1").arg(text));
+    }
+
     void runCheck() {
+        updateTrayStatus(isEn ? "Status: Checking... (1/3)" : "Durum: Kontrol ediliyor... (1/3)");
         QTimer::singleShot(5000, this, &StartupChecker::pingTest);
     }
+
 private:
     void pingTest() {
         attempts++;
+        updateTrayStatus(isEn 
+            ? QString("Status: Testing Discord (%1/3)...").arg(attempts) 
+            : QString("Durum: Discord Test Ediliyor (%1/3)...").arg(attempts));
+
         auto *manager = new QNetworkAccessManager(this);
         QNetworkRequest request((QUrl("https://discord.com")));
         auto *reply = manager->get(request);
@@ -243,9 +374,20 @@ private:
             if (timer->isActive()) {
                 timer->stop();
                 if (reply->error() == QNetworkReply::NoError) {
-                    cleanup(); QApplication::quit(); 
+                    cleanup();
+                    updateTrayStatus(isEn ? "Status: Connected (Active)" : "Durum: Bağlantı Başarılı (Aktif)");
+                    if (trayIcon) {
+                        trayIcon->showMessage(
+                            "Naga Zapret",
+                            isEn ? "DPI bypass is active. Connection healthy." : "Sansür aşma servisi aktif. Bağlantı sorunsuz.",
+                            QSystemTrayIcon::Information,
+                            3000
+                        );
+                    }
+                    QTimer::singleShot(4000, qApp, &QApplication::quit);
                 } else {
-                    cleanup(); handleFailure();
+                    cleanup(); 
+                    handleFailure();
                 }
             }
         });
@@ -254,15 +396,19 @@ private:
 
     void handleFailure() {
         if (attempts < 3) {
+            updateTrayStatus(isEn 
+                ? QString("Status: Retrying (%1/3)...").arg(attempts + 1)
+                : QString("Durum: Yeniden deneniyor (%1/3)...").arg(attempts + 1));
             QTimer::singleShot(5000, this, &StartupChecker::pingTest);
         } else {
+            updateTrayStatus(isEn ? "Status: Connection Issue Detected" : "Durum: Bağlantı Sorunu Algılandı");
             askUser();
         }
     }
 
     void askUser() {
-        bool isEn = !QLocale::system().name().startsWith("tr", Qt::CaseInsensitive);
         QMessageBox msgBox;
+        msgBox.setWindowIcon(getAppIcon());
         msgBox.setWindowTitle(isEn ? "Naga Zapret - Connection Error" : "Naga Zapret - Bağlantı Hatası");
         msgBox.setText(isEn 
             ? "A connection issue with Discord/Roblox was detected at system startup.\n\nWould you like to reinstall/restart the censorship bypass service?"
@@ -301,11 +447,9 @@ public:
 
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
-        
-        // Pencere boyutunu tamamen sabitleyerek alttan/kenarlardan boyunun değişmesini engeller
+        setWindowIcon(getAppIcon());
         setFixedSize(560, 480);
 
-        // Bağımsız top-level pencere olarak oluşturulur, böylece WSLg'de tam etkileşimli kalır
         logWindow = new LogWindow(nullptr);
         logWindow->setOnCloseCallback([this]() {
             updateToggleLogText();
@@ -446,6 +590,7 @@ public:
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
 
+        setupTrayIcon();
         updateUiTexts();
         checkStatus();
     }
@@ -459,14 +604,35 @@ protected:
     }
 
     void closeEvent(QCloseEvent *event) override {
-        if (logWindow) {
-            logWindow->deleteLater();
+        // Çıkış doğrudan tepsiden tetiklenmemişse pencereyi kapatmak yerine tepsiye gizle
+        if (!isQuitting && trayIcon && trayIcon->isVisible()) {
+            event->ignore();
+            hide();
+            if (logWindow && logWindow->isVisible()) {
+                logWindow->hide();
+            }
+            if (!hasShownTrayNotification) {
+                trayIcon->showMessage(
+                    "Naga Zapret",
+                    isEnglish ? "Application is running in the background. Click the tray icon to reopen."
+                              : "Uygulama arka planda çalışmaya devam ediyor. Açmak için tepsi simgesine tıklayın.",
+                    QSystemTrayIcon::Information,
+                    2500
+                );
+                hasShownTrayNotification = true;
+            }
+        } else {
+            if (logWindow) {
+                logWindow->deleteLater();
+            }
+            QWidget::closeEvent(event);
         }
-        QWidget::closeEvent(event);
     }
 
 private:
     bool isEnglish = false;
+    bool isQuitting = false;
+    bool hasShownTrayNotification = false;
     StatusState currentStatus = StatusState::Checking;
 
     TestStatus discordTestState = TestStatus::Untested;
@@ -476,6 +642,14 @@ private:
     TestStatus robloxTestState = TestStatus::Untested;
     int robloxProgress = 0;
     int robloxSuccess = 0;
+
+    QSystemTrayIcon *trayIcon = nullptr;
+    QMenu *trayMenu = nullptr;
+    QAction *actTrayStatus = nullptr;
+    QAction *actTrayShow = nullptr;
+    QAction *actTrayTest = nullptr;
+    QAction *actTrayLog = nullptr;
+    QAction *actTrayQuit = nullptr;
 
     LogWindow *logWindow;
     QLabel *lblGlobe;
@@ -495,6 +669,80 @@ private:
     QPushButton *btnTest;
 
     bool isRoot() { return geteuid() == 0; }
+
+    void setupTrayIcon() {
+        trayIcon = new QSystemTrayIcon(getAppIcon(), this);
+        trayMenu = new QMenu(this);
+        trayMenu->setStyleSheet(R"(
+            QMenu { 
+                background-color: #1e1b24; 
+                color: #f1f5f9; 
+                border: 1px solid #3d2438; 
+                padding: 4px; 
+                border-radius: 4px; 
+                font-family: 'Segoe UI', Ubuntu, sans-serif;
+            }
+            QMenu::item { 
+                padding: 7px 22px; 
+                font-size: 12px; 
+                border-radius: 3px; 
+            }
+            QMenu::item:selected { 
+                background-color: #96335d; 
+                color: #ffffff; 
+            }
+            QMenu::separator { 
+                height: 1px; 
+                background: #3d2438; 
+                margin: 4px 8px; 
+            }
+        )");
+
+        actTrayStatus = trayMenu->addAction(isEnglish ? "Status: Checking..." : "Durum: Kontrol Ediliyor...");
+        actTrayStatus->setEnabled(false);
+
+        trayMenu->addSeparator();
+
+        actTrayShow = trayMenu->addAction(isEnglish ? "Show Naga Zapret" : "Naga Zapret'i Göster");
+        connect(actTrayShow, &QAction::triggered, this, [this]() {
+            showNormal();
+            raise();
+            activateWindow();
+        });
+
+        actTrayTest = trayMenu->addAction(isEnglish ? "Run Connection Test" : "Bağlantı Testi Yap");
+        connect(actTrayTest, &QAction::triggered, this, &ZapretWindow::startMultiTests);
+
+        actTrayLog = trayMenu->addAction(isEnglish ? "Toggle Live Logs" : "Canlı Günlüğü Aç/Kapat");
+        connect(actTrayLog, &QAction::triggered, this, &ZapretWindow::toggleLogWindow);
+
+        trayMenu->addSeparator();
+
+        actTrayQuit = trayMenu->addAction(isEnglish ? "Exit Completely" : "Tamamen Çıkış Yap");
+        connect(actTrayQuit, &QAction::triggered, this, [this]() {
+            isQuitting = true;
+            if (logWindow) logWindow->deleteLater();
+            trayIcon->hide();
+            QApplication::quit();
+        });
+
+        trayIcon->setContextMenu(trayMenu);
+        trayIcon->setToolTip("Naga Zapret Control Center");
+        trayIcon->show();
+
+        connect(trayIcon, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+                if (isVisible() && !isMinimized()) {
+                    hide();
+                    if (logWindow && logWindow->isVisible()) logWindow->hide();
+                } else {
+                    showNormal();
+                    raise();
+                    activateWindow();
+                }
+            }
+        });
+    }
 
     void snapLogWindow() {
         int targetX = this->geometry().x() + this->width() + 10;
@@ -541,6 +789,11 @@ private:
         btnStop->setText(isEnglish ? "Stop & Remove Zapret" : "Zapret Durdur ve Kaldır");
         btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi");
 
+        if (actTrayShow) actTrayShow->setText(isEnglish ? "Show Naga Zapret" : "Naga Zapret'i Göster");
+        if (actTrayTest) actTrayTest->setText(isEnglish ? "Run Connection Test" : "Bağlantı Testi Yap");
+        if (actTrayLog) actTrayLog->setText(isEnglish ? "Toggle Live Logs" : "Canlı Günlüğü Aç/Kapat");
+        if (actTrayQuit) actTrayQuit->setText(isEnglish ? "Exit Completely" : "Tamamen Çıkış Yap");
+
         logWindow->updateTexts(isEnglish);
         updateToggleLogText();
         updateStatusLabel();
@@ -583,6 +836,13 @@ private:
                 statusLabel->setText(isEnglish ? "Status: Removed" : "Durum: Kaldırıldı");
                 statusIconLabel->setPixmap(createStatusDot(QColor("#f87171")));
                 break;
+        }
+
+        if (actTrayStatus) {
+            actTrayStatus->setText(statusLabel->text());
+        }
+        if (trayIcon) {
+            trayIcon->setToolTip(QString("Naga Zapret - %1").arg(statusLabel->text()));
         }
     }
 
@@ -714,6 +974,19 @@ private:
         progressBar->setValue(0);
         spinner->start();
 
+        if (trayIcon && (!isVisible() || isMinimized())) {
+            trayIcon->showMessage(
+                "Naga Zapret",
+                isEnglish ? "Connection test started for Discord and Roblox..."
+                          : "Discord ve Roblox için bağlantı testi başlatıldı...",
+                QSystemTrayIcon::Information,
+                2500
+            );
+        }
+        if (actTrayStatus) {
+            actTrayStatus->setText(isEnglish ? "Status: Testing connection..." : "Durum: Bağlantı test ediliyor...");
+        }
+
         appendLog("=========================================");
         appendLog(isEnglish 
             ? "> Starting 10 live access tests for Discord and Roblox..." 
@@ -746,7 +1019,7 @@ private:
             robloxProgress = 0;
             updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 0, 0);
 
-            runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
+            runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this, discordSuccessCount](int robloxSuccessCount) {
                 robloxSuccess = robloxSuccessCount;
                 if (robloxSuccessCount >= 5) {
                     robloxTestState = TestStatus::Success;
@@ -765,6 +1038,29 @@ private:
                 spinner->stop();
                 progressBar->setValue(20);
                 setButtonsEnabled(true);
+
+                bool discordOk = (discordSuccessCount >= 5);
+                bool robloxOk = (robloxSuccessCount >= 5);
+                bool allOk = (discordOk && robloxOk);
+
+                if (trayIcon && (!isVisible() || isMinimized())) {
+                    QString title = allOk 
+                        ? (isEnglish ? "Connection Test Passed" : "Bağlantı Testi Başarılı")
+                        : (isEnglish ? "Connection Test Failed" : "Bağlantı Testi Başarısız");
+                    
+                    QString msg = isEnglish
+                        ? QString("Discord: %1/10 OK, Roblox: %2/10 OK. %3")
+                            .arg(discordSuccessCount)
+                            .arg(robloxSuccessCount)
+                            .arg(allOk ? "DPI bypass is active and healthy." : "Some services could not be reached.")
+                        : QString("Discord: %1/10 Başarılı, Roblox: %2/10 Başarılı. %3")
+                            .arg(discordSuccessCount)
+                            .arg(robloxSuccessCount)
+                            .arg(allOk ? "Sansür aşma servisi aktif ve sorunsuz." : "Bazı servislere erişilemedi.");
+
+                    trayIcon->showMessage(title, msg, allOk ? QSystemTrayIcon::Information : QSystemTrayIcon::Warning, 4500);
+                }
+                updateStatusLabel();
             });
         });
     }
@@ -831,6 +1127,10 @@ private:
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+    app.setWindowIcon(getAppIcon());
+    // Pencereler kapandığında (X tuşuna basıldığında) uygulamanın sistem tepsisinde arka planda çalışmaya devam etmesi için
+    QApplication::setQuitOnLastWindowClosed(false);
+
     app.setStyleSheet(R"(
         QWidget { 
             background-color: #141418; 
@@ -932,8 +1232,8 @@ int main(int argc, char *argv[]) {
             border-radius: 3px;
             border: 1px solid #3d354d;
         }
-        QPushButton#btnClearLog:hover {
-            background-color: #362f44;
+        QPushButton#btnClearLog:hover { 
+            background-color: #362f44; 
             color: #ffffff;
         }
         QPushButton:disabled { 
@@ -996,15 +1296,75 @@ int main(int argc, char *argv[]) {
         }
     )");
 
-    QStringList args = app.arguments();
-    if (args.contains("--startup-check")) {
+        QStringList args = app.arguments();
+    bool isStartupCheck = args.contains("--startup-check");
+
+    const QString serverName = "naga-zapret-single-instance-" + QString::number(geteuid());
+
+    // Çalışan başka bir kopya var mı kontrol et
+    QLocalSocket socket;
+    socket.connectToServer(serverName);
+    if (socket.waitForConnected(500)) {
+        // Zaten arka planda veya açık çalışan bir kopya var!
+        // Eğer bu kopya normal GUI olarak açıldıysa, mevcut kopyaya "SHOW" komutu gönder
+        if (!isStartupCheck) {
+            socket.write("SHOW");
+            socket.waitForBytesWritten(1000);
+        }
+        socket.disconnectFromServer();
+        return 0; // Yeni kopyayı sonlandır, mevcut kopya ekrana gelsin
+    }
+
+    // İlk kopya: Eski soket artık dosyasını sil ve sunucuyu başlat
+    QLocalServer::removeServer(serverName);
+    auto *localServer = new QLocalServer(&app);
+    localServer->listen(serverName);
+
+    if (isStartupCheck) {
         StartupChecker checker;
         checker.runCheck();
+
+        ZapretWindow *guiWindow = nullptr;
+        QObject::connect(localServer, &QLocalServer::newConnection, [&guiWindow, localServer]() {
+            QLocalSocket *client = localServer->nextPendingConnection();
+            if (!client) return;
+            QObject::connect(client, &QLocalSocket::readyRead, [&guiWindow, client]() {
+                QString cmd = QString::fromUtf8(client->readAll()).trimmed();
+                if (cmd == "SHOW") {
+                    if (!guiWindow) {
+                        guiWindow = new ZapretWindow();
+                    }
+                    guiWindow->showNormal();
+                    guiWindow->raise();
+                    guiWindow->activateWindow();
+                }
+                client->disconnectFromServer();
+                client->deleteLater();
+            });
+        });
+
         return app.exec();
     }
 
     ZapretWindow window;
     window.show();
+
+    // Normal GUI modunda arka plandayken yeni kopya açılınca olan pencereyi ekrana getir
+    QObject::connect(localServer, &QLocalServer::newConnection, [&window, localServer]() {
+        QLocalSocket *client = localServer->nextPendingConnection();
+        if (!client) return;
+        QObject::connect(client, &QLocalSocket::readyRead, [&window, client]() {
+            QString cmd = QString::fromUtf8(client->readAll()).trimmed();
+            if (cmd == "SHOW") {
+                window.showNormal();
+                window.raise();
+                window.activateWindow();
+            }
+            client->disconnectFromServer();
+            client->deleteLater();
+        });
+    });
+
     return app.exec();
 }
 
