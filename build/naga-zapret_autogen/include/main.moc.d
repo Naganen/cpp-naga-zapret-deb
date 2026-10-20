@@ -449,6 +449,10 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qyieldcpu.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPen \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPixmap \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbrush.h \
@@ -465,6 +469,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qinputmethod.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qkeysequence.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpaintdevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpalette.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
@@ -510,6 +515,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMessageBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
@@ -530,6 +536,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \

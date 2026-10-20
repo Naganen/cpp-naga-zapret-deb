@@ -295,6 +295,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QFlags \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QLocale \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess \
@@ -313,6 +314,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtCore/q23utility.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/q26numeric.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstracteventdispatcher.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalloc.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
@@ -399,6 +401,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qprocessordetection.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qrect.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qrefcount.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopedpointer.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopeguard.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qset.h \
@@ -453,6 +456,9 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qyieldcpu.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPen \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbrush.h \
@@ -469,6 +475,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qinputmethod.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qkeysequence.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpaintdevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpalette.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
@@ -486,6 +493,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkAccessManager \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkReply \
@@ -509,17 +517,23 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QComboBox \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMessageBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractitemdelegate.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcombobox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialogbuttonbox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
@@ -528,8 +542,15 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabbar.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtextedit.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
@@ -769,8 +790,6 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkTargets-none.cmake:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkDependencies.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersionImpl.cmake:
@@ -837,8 +856,6 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWindowsHelpers.cmake:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicToolHelpers.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicTargetHelpers.cmake:
@@ -898,6 +915,38 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeHelpers.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/FindWrapAtomic.cmake:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomPythonHelpers.cmake:
+
+/usr/lib/gcc/x86_64-linux-gnu/15/include/stdbool.h:
+
+/usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/include/x86_64-linux-gnu/sys/single_threaded.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomCycloneDXHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicPluginHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtextedit.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWindowsHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
 
@@ -977,10 +1026,6 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearrayalgorithms.h:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomPythonHelpers.cmake:
-
-/usr/lib/gcc/x86_64-linux-gnu/15/include/stdbool.h:
-
 /usr/include/stdlib.h:
 
 /usr/include/sched.h:
@@ -993,7 +1038,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/include/c++/15/list:
 
-/usr/include/linux/posix_types.h:
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractslider.h:
 
 /usr/share/cmake-4.2/Modules/CMakeCXXInformation.cmake:
 
@@ -1051,10 +1096,6 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/include/c++/15/tr1/hypergeometric.tcc:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomCycloneDXHelpers.cmake:
-
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreConfig.cmake:
 
 /usr/include/c++/15/tr1/bessel_function.tcc:
@@ -1081,6 +1122,8 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 
 /usr/include/c++/15/set:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QComboBox:
+
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
 /usr/include/c++/15/pstl/pstl_config.h:
@@ -1090,6 +1133,8 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkglobal.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyleoption.h:
 
 /usr/include/c++/15/optional:
 
@@ -1165,8 +1210,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/bits/stream_iterator.h:
 
-/usr/include/x86_64-linux-gnu/sys/select.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qdarwinhelpers.h:
 
 /usr/include/c++/15/bits/list.tcc:
@@ -1182,6 +1225,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/include/c++/15/bits/hashtable.h:
 
 /usr/include/c++/15/bits/locale_classes.tcc:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
 
 /usr/include/c++/15/bits/hash_bytes.h:
 
@@ -1263,6 +1310,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/unordered_set:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QString:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearraylist.h:
 
 /usr/include/c++/15/bits/nested_exception.h:
@@ -1329,6 +1380,8 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qabstractsocket.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h:
+
 /usr/include/wchar.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
@@ -1344,6 +1397,8 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/include/c++/15/typeinfo:
 
 /usr/include/c++/15/bits/std_abs.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qfontmetrics.h:
 
@@ -1386,6 +1441,8 @@ naga-zapret_autogen/moc_predefs.h:
 /usr/include/c++/15/bits/allocated_ptr.h:
 
 /usr/include/c++/15/ctime:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h:
 
 CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
@@ -1460,6 +1517,10 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qrgba64.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/15/include/stdarg.h:
+
+/usr/include/c++/15/bits/stl_iterator.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicFindPackageHelpers.cmake:
 
@@ -1633,6 +1694,10 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
+/usr/include/linux/posix_types.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter:
+
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomDocumentNamespaceHelpers.cmake:
@@ -1640,10 +1705,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/x86_64-linux-gnu/bits/types/FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicPluginHelpers.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
@@ -1703,9 +1764,13 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/c++/15/bits/c++locale.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtCore/QLocale:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomGenerationHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabbar.h:
 
 /usr/include/c++/15/bits/stl_algobase.h:
 
@@ -1727,8 +1792,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20functional.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h:
@@ -1738,8 +1801,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/c++/15/vector:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20iterator.h:
-
-/usr/include/x86_64-linux-gnu/sys/single_threaded.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20type_traits.h:
 
@@ -1754,10 +1815,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q26numeric.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/QString:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h:
 
 /usr/include/c++/15/tr1/beta_function.tcc:
 
@@ -1821,9 +1878,13 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerfwd.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerinfo.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qnetworkaccessmanager.h:
 
@@ -1979,8 +2040,6 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtcoreglobal.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qtdeprecationdefinitions.h:
 
 /usr/include/c++/15/bits/stl_iterator_base_funcs.h:
@@ -2017,11 +2076,17 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtextedit.h:
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QColor:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcombobox.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QPen:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qfontvariableaxis.h:
 
@@ -2034,6 +2099,10 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/share/cmake-4.2/Modules/Platform/Linker/GNU.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkTargets-none.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
 
@@ -2065,6 +2134,8 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkReply:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qnetworkreply.h:
@@ -2079,9 +2150,15 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractitemdelegate.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qsystemdetection.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h:
 
@@ -2094,17 +2171,3 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h:
-
-/usr/include/x86_64-linux-gnu/sys/types.h:
-
-/usr/include/c++/15/bits/stl_iterator.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/15/include/stdarg.h:

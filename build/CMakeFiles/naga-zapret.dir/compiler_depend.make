@@ -456,6 +456,10 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qyieldcpu.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPen \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPixmap \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbrush.h \
@@ -472,6 +476,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qinputmethod.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qkeysequence.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpaintdevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpalette.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
@@ -517,6 +522,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMessageBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
@@ -537,6 +543,7 @@ naga-zapret_autogen/timestamp: /mnt/c/Users/nagan/OneDrive/Masaüstü/Projects/n
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
@@ -1056,6 +1063,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QFlags \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QIODevice \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QLocale \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess \
@@ -1075,6 +1083,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/q23utility.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/q26numeric.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstracteventdispatcher.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalloc.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qanystringview.h \
@@ -1161,6 +1170,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qprocessordetection.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qrect.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qrefcount.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qregularexpression.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopedpointer.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qscopeguard.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qset.h \
@@ -1217,6 +1227,9 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qxptype_traits.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qyieldcpu.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/QPen \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbitmap.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qbrush.h \
@@ -1233,6 +1246,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qinputmethod.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qkeysequence.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpaintdevice.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpalette.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
@@ -1250,6 +1264,7 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkAccessManager \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkReply \
@@ -1273,17 +1288,23 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkexports.h \
   /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qtnetworkglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QComboBox \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMessageBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractitemdelegate.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractscrollarea.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractslider.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractspinbox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcombobox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialogbuttonbox.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
@@ -1292,8 +1313,15 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: /mnt/c/Users/nagan/OneDrive/Masaüstü/Pr
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyleoption.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabbar.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtextedit.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
@@ -1635,8 +1663,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake:
 
-/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkTargets-none.cmake:
-
 /usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkDependencies.cmake:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersionImpl.cmake:
@@ -1811,6 +1837,14 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h:
 
+/usr/lib/x86_64-linux-gnu/libunistring.so.5:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWindowsHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h:
+
 /lib/x86_64-linux-gnu/libproxy.so.1:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersion.cmake:
@@ -1903,6 +1937,10 @@ naga-zapret_autogen/mocs_compilation.cpp:
 
 /usr/include/stdlib.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QPixmap:
+
 /usr/include/sched.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
@@ -1914,8 +1952,6 @@ naga-zapret_autogen/mocs_compilation.cpp:
 /usr/include/c++/15/list:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qabstractslider.h:
-
-/usr/include/linux/posix_types.h:
 
 /usr/share/cmake-4.2/Modules/CMakeCXXInformation.cmake:
 
@@ -2119,6 +2155,10 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/c++/15/bits/locale_classes.tcc:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
+
 /usr/lib/x86_64-linux-gnu/libm.so.6:
 
 /usr/include/c++/15/bits/hash_bytes.h:
@@ -2205,12 +2245,6 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h:
 
-/usr/lib/x86_64-linux-gnu/libunistring.so.5:
-
-/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWindowsHelpers.cmake:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h:
-
 /usr/include/c++/15/bits/stl_tempbuf.h:
 
 /usr/include/c++/15/unordered_set:
@@ -2287,6 +2321,8 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qabstractsocket.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h:
+
 /usr/include/wchar.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
@@ -2306,6 +2342,12 @@ CMakeFiles/4.2.3/CMakeSystem.cmake:
 /usr/include/c++/15/ios:
 
 /usr/include/c++/15/bits/std_abs.h:
+
+/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.10.2:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qfontmetrics.h:
 
 /usr/include/linux/limits.h:
 
@@ -2617,6 +2659,10 @@ CMakeFiles/4.2.3/CMakeCXXCompiler.cmake:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
+/usr/include/linux/posix_types.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter:
+
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicSbomDocumentNamespaceHelpers.cmake:
@@ -2809,7 +2855,13 @@ CMakeFiles/naga-zapret.dir/naga-zapret_autogen/mocs_compilation.cpp.o:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerfwd.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerinfo.h:
+
 /usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar:
 
 /usr/include/x86_64-linux-gnu/qt6/QtNetwork/qnetworkaccessmanager.h:
 
@@ -3023,11 +3075,19 @@ naga-zapret_autogen/include/main.moc:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h:
 
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QColor:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcombobox.h:
+
 /usr/include/x86_64-linux-gnu/qt6/QtCore/q20algorithm.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/QPen:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qfontvariableaxis.h:
 
@@ -3040,6 +3100,10 @@ naga-zapret_autogen/include/main.moc:
 /usr/share/cmake-4.2/Modules/Platform/Linker/GNU.cmake:
 
 /usr/include/x86_64-linux-gnu/qt6/QtGui/qicon.h:
+
+/usr/lib/x86_64-linux-gnu/cmake/Qt6Network/Qt6NetworkTargets-none.cmake:
+
+/usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h:
 
 /usr/lib/x86_64-linux-gnu/libatomic.so.1:
 
@@ -3101,10 +3165,6 @@ naga-zapret_autogen/include/main.moc:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qcombobox.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h:
@@ -3115,22 +3175,4 @@ naga-zapret_autogen/include/main.moc:
 
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialogbuttonbox.h:
 
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qcontainerinfo.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h:
-
 /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmessagebox.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h:
-
-/usr/lib/x86_64-linux-gnu/libQt6Core.so.6.10.2:
-
-/usr/include/x86_64-linux-gnu/qt6/QtGui/qfontmetrics.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h:
-
-/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h:

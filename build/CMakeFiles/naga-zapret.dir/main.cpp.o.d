@@ -452,6 +452,8 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qrubberband.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QProcess \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qprocess.h \
  /usr/include/x86_64-linux-gnu/qt6/QtNetwork/QNetworkAccessManager \
@@ -536,7 +538,15 @@ CMakeFiles/naga-zapret.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialog.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qdialogbuttonbox.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QLocale \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlocale.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QPainter \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qpainter.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QPen \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qcolor.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/QPixmap \
+ /usr/include/x86_64-linux-gnu/qt6/QtGui/qpixmap.h /usr/include/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \

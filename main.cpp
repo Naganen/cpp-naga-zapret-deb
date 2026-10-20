@@ -6,6 +6,7 @@
 #include <QTextEdit>
 #include <QLabel>
 #include <QComboBox>
+#include <QProgressBar>
 #include <QProcess>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -15,7 +16,73 @@
 #include <QElapsedTimer>
 #include <QMessageBox>
 #include <QLocale>
+#include <QPainter>
+#include <QPen>
+#include <QColor>
+#include <QPixmap>
 #include <unistd.h>
+
+// Sistem fontuna veya emoji desteğine bağımlı olmayan vektörel dünya ikonu
+static QPixmap createGlobePixmap(int size, const QColor &color) {
+    QPixmap pix(size, size);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPen pen(color, 1.6);
+    p.setPen(pen);
+    p.drawEllipse(1, 1, size - 2, size - 2);
+    p.drawLine(1, size / 2, size - 1, size / 2);
+    p.drawEllipse(size / 4, 1, size / 2, size - 2);
+    return pix;
+}
+
+// Dönen yükleniyor animasyonu widget'ı
+class SpinnerWidget : public QWidget {
+    Q_OBJECT
+    int angle = 0;
+    QTimer *timer;
+    bool spinning = false;
+public:
+    SpinnerWidget(QWidget *parent = nullptr) : QWidget(parent) {
+        setFixedSize(22, 22);
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, [this]() {
+            angle = (angle + 30) % 360;
+            update();
+        });
+    }
+
+    void start() {
+        spinning = true;
+        if (!timer->isActive()) {
+            timer->start(60);
+        }
+        show();
+        update();
+    }
+
+    void stop() {
+        spinning = false;
+        timer->stop();
+        hide();
+        update();
+    }
+
+    bool isSpinning() const { return spinning; }
+
+protected:
+    void paintEvent(QPaintEvent *) override {
+        if (!spinning) return;
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
+        p.translate(width() / 2, height() / 2);
+        p.rotate(angle);
+
+        QPen pen(QColor("#a04565"), 3, Qt::SolidLine, Qt::RoundCap);
+        p.setPen(pen);
+        p.drawArc(-8, -8, 16, 16, 0, 270 * 16);
+    }
+};
 
 // Arka plan başlatıcı ve ağ test edici
 class StartupChecker : public QObject {
@@ -106,10 +173,11 @@ public:
 
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
-        resize(600, 680);
+        resize(600, 430);
 
         auto *mainLayout = new QVBoxLayout(this);
-        mainLayout->setSpacing(16);
+        mainLayout->setAlignment(Qt::AlignTop);
+        mainLayout->setSpacing(14);
         mainLayout->setContentsMargins(20, 20, 20, 20);
 
         auto *headerLayout = new QHBoxLayout();
@@ -117,6 +185,15 @@ public:
         lblTitle->setObjectName("title");
         headerLayout->addWidget(lblTitle);
         headerLayout->addStretch();
+
+        lblGlobe = new QLabel(this);
+        lblGlobe->setPixmap(createGlobePixmap(16, QColor("#F3F4F4")));
+        headerLayout->addWidget(lblGlobe);
+
+        lblLang = new QLabel("Dil:", this);
+        lblLang->setObjectName("lblLang");
+        lblLang->setStyleSheet("font-size: 13px; font-weight: bold; color: #F3F4F4;");
+        headerLayout->addWidget(lblLang);
 
         langCombo = new QComboBox(this);
         langCombo->setObjectName("langCombo");
@@ -182,13 +259,49 @@ public:
         testLayout->addWidget(robloxLabel);
         mainLayout->addWidget(testCard);
 
+        // İlerleme çubuğu ve dönen spinner alanı
+        progressContainer = new QWidget(this);
+        auto *progressLayout = new QHBoxLayout(progressContainer);
+        progressLayout->setContentsMargins(0, 0, 0, 0);
+        progressLayout->setSpacing(10);
+
+        spinner = new SpinnerWidget(this);
+        progressBar = new QProgressBar(this);
+        progressBar->setTextVisible(true);
+        progressBar->setAlignment(Qt::AlignCenter);
+
+        progressLayout->addWidget(spinner);
+        progressLayout->addWidget(progressBar);
+        progressContainer->setVisible(false);
+        mainLayout->addWidget(progressContainer);
+
+        // Kapatılıp açılabilir günlük (log) alanı
+        btnToggleLog = new QPushButton(this);
+        btnToggleLog->setObjectName("btnToggleLog");
+        btnToggleLog->setCursor(Qt::PointingHandCursor);
+        mainLayout->addWidget(btnToggleLog);
+
         logArea = new QTextEdit(this);
         logArea->setReadOnly(true);
+        logArea->setFixedHeight(170);
+        logArea->setVisible(false); // Varsayılan olarak kapalı
         mainLayout->addWidget(logArea);
 
-        connect(langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+        connect(langCombo, QOverload<int>::of(&QComboBox::activated), this, [this](int index) {
             isEnglish = (index == 1);
+            langCombo->hidePopup();
             updateUiTexts();
+        });
+
+        connect(btnToggleLog, &QPushButton::clicked, this, [this]() {
+            bool willShow = !logArea->isVisible();
+            logArea->setVisible(willShow);
+            updateToggleLogText();
+            if (willShow) {
+                resize(width(), height() + 184);
+            } else {
+                resize(width(), height() - 184);
+            }
         });
 
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
@@ -211,11 +324,17 @@ private:
     int robloxProgress = 0;
     int robloxSuccess = 0;
 
+    QLabel *lblGlobe;
+    QLabel *lblLang;
     QComboBox *langCombo;
     QLabel *lblTestTitle;
     QLabel *statusLabel;
     QLabel *discordLabel;
     QLabel *robloxLabel;
+    QWidget *progressContainer;
+    SpinnerWidget *spinner;
+    QProgressBar *progressBar;
+    QPushButton *btnToggleLog;
     QTextEdit *logArea;
     QPushButton *btnStart;
     QPushButton *btnStop;
@@ -236,12 +355,22 @@ private:
         langCombo->setEnabled(enabled);
     }
 
+    void updateToggleLogText() {
+        if (logArea->isVisible()) {
+            btnToggleLog->setText(isEnglish ? "▲ Hide Logs" : "▲ Günlüğü Gizle");
+        } else {
+            btnToggleLog->setText(isEnglish ? "▼ Show Logs" : "▼ Günlüğü Göster");
+        }
+    }
+
     void updateUiTexts() {
+        lblLang->setText(isEnglish ? "Language:" : "Dil:");
         lblTestTitle->setText(isEnglish ? "Access Status (10x Packet Test)" : "Erişim Durumu (10x Paket Testi)");
         btnStart->setText(isEnglish ? "Install & Start Zapret" : "Zapret Kur ve Başlat");
         btnStop->setText(isEnglish ? "Stop & Remove Zapret" : "Zapret Durdur ve Kaldır");
         btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi Yap");
 
+        updateToggleLogText();
         updateStatusLabel();
         updateServiceLabel(discordLabel, "Discord", discordTestState, discordProgress, discordSuccess);
         updateServiceLabel(robloxLabel, "Roblox", robloxTestState, robloxProgress, robloxSuccess);
@@ -341,16 +470,18 @@ private:
 
     void startZapret() {
         setButtonsEnabled(false);
+        progressContainer->setVisible(true);
+        progressBar->setRange(0, 0); // Sürekli hareket eden yükleme animasyonu
+        spinner->start();
+
         appendLog(isEnglish 
             ? "> Starting your custom installation script (install.sh)..." 
             : "> Sizin özel kurulum betiğiniz (install.sh) başlatılıyor...");
         setStatus(StatusState::Installing);
 
-        // Gönderdiğiniz install.sh doğrudan tetiklenir, C++ hiçbir işleme müdahale etmez.
         QString cmd = "chmod +x /usr/share/naga-zapret/install.sh && bash /usr/share/naga-zapret/install.sh";
 
         runCommandAsRoot(cmd, [this](int exitCode) {
-            setButtonsEnabled(true);
             if (exitCode == 0) {
                 appendLog(isEnglish 
                     ? "> Installation script completed!" 
@@ -358,6 +489,10 @@ private:
                 setStatus(StatusState::Running);
                 startMultiTests();
             } else {
+                spinner->stop();
+                progressBar->setRange(0, 100);
+                progressBar->setValue(0);
+                setButtonsEnabled(true);
                 appendLog(isEnglish 
                     ? QString("> Error: Script stopped running (Exit: %1).").arg(exitCode)
                     : QString("> Hata: Script çalışmayı durdurdu (Çıkış: %1).").arg(exitCode));
@@ -368,12 +503,15 @@ private:
 
     void stopZapret() {
         setButtonsEnabled(false);
+        progressContainer->setVisible(true);
+        progressBar->setRange(0, 0);
+        spinner->start();
+
         appendLog(isEnglish 
             ? "> Stopping Zapret and cleaning up system..." 
             : "> Zapret durduruluyor ve sistem temizleniyor...");
         setStatus(StatusState::Removing);
 
-        // Sizin scriptteki mantığa uygun olarak DNS açma ve Zapret silme
         QString cmd = "echo -e 'Y\\n\\n' | /opt/zapret/uninstall_easy.sh 2>/dev/null; "
                       "rm -rf /opt/zapret; "
                       "echo '> DNS kilidi çözülüyor...'; "
@@ -385,6 +523,9 @@ private:
                       "echo '> Sistem temizlendi!'";
 
         runCommandAsRoot(cmd, [this](int exitCode) {
+            spinner->stop();
+            progressBar->setRange(0, 100);
+            progressBar->setValue(100);
             setButtonsEnabled(true);
             appendLog(isEnglish 
                 ? "> Zapret removed. Internet restored to normal." 
@@ -396,6 +537,11 @@ private:
 
     void startMultiTests() {
         setButtonsEnabled(false);
+        progressContainer->setVisible(true);
+        progressBar->setRange(0, 20); // 10 Discord + 10 Roblox
+        progressBar->setValue(0);
+        spinner->start();
+
         appendLog("=========================================");
         appendLog(isEnglish 
             ? "> Starting 10 live access tests for Discord and Roblox..." 
@@ -444,6 +590,8 @@ private:
                 updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 10, robloxSuccess);
 
                 appendLog("=========================================");
+                spinner->stop();
+                progressBar->setValue(20);
                 setButtonsEnabled(true);
             });
         });
@@ -454,9 +602,11 @@ private:
 
         if (serviceName == "Discord") {
             discordProgress = currentAttempt;
+            progressBar->setValue(currentAttempt);
             updateServiceLabel(discordLabel, "Discord", TestStatus::Testing, currentAttempt, successCount);
         } else if (serviceName == "Roblox") {
             robloxProgress = currentAttempt;
+            progressBar->setValue(10 + currentAttempt);
             updateServiceLabel(robloxLabel, "Roblox", TestStatus::Testing, currentAttempt, successCount);
         }
 
@@ -511,23 +661,27 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setStyleSheet(R"(
         QWidget { background-color: #2C2C2C; color: #F3F4F4; font-family: 'Segoe UI', Ubuntu, sans-serif; }
-        QFrame#card { background-color: #612D53; border-radius: 10px; border: 1px solid #853953; }
+        QFrame#card { background-color: #612D53; border-radius: 4px; border: 1px solid #853953; }
         QLabel { font-size: 13px; color: #F3F4F4; }
         QLabel#title { font-size: 20px; font-weight: bold; color: #F3F4F4; }
         QLabel#status { font-size: 14px; font-weight: 600; color: #F3F4F4; }
-        QPushButton { color: #F3F4F4; font-weight: bold; font-size: 13px; padding: 10px; border-radius: 8px; border: none; }
+        QPushButton { color: #F3F4F4; font-weight: bold; font-size: 13px; padding: 10px; border-radius: 3px; border: none; }
         QPushButton#btnStart { background-color: #853953; }
         QPushButton#btnStart:hover { background-color: #a04565; }
         QPushButton#btnStop { background-color: #44213a; border: 1px solid #853953; }
         QPushButton#btnStop:hover { background-color: #582b4b; }
         QPushButton#btnTest { background-color: #612D53; border: 1px solid #853953; }
         QPushButton#btnTest:hover { background-color: #7a3869; }
+        QPushButton#btnToggleLog { background-color: #383838; color: #d1d5db; font-size: 12px; font-weight: 600; padding: 7px; border-radius: 3px; border: 1px solid #4f4f4f; }
+        QPushButton#btnToggleLog:hover { background-color: #484848; color: #F3F4F4; }
         QPushButton:disabled { background-color: #1e1e1e; color: #666666; border: none; }
-        QComboBox#langCombo { background-color: #44213a; color: #F3F4F4; border: 1px solid #853953; border-radius: 6px; padding: 4px 10px; font-weight: bold; font-size: 12px; }
+        QComboBox#langCombo { background-color: #44213a; color: #F3F4F4; border: 1px solid #853953; border-radius: 3px; padding: 4px 10px; font-weight: bold; font-size: 12px; }
         QComboBox#langCombo:hover { background-color: #582b4b; }
         QComboBox#langCombo::drop-down { border: none; }
         QComboBox#langCombo QAbstractItemView { background-color: #2C2C2C; color: #F3F4F4; selection-background-color: #853953; selection-color: #F3F4F4; border: 1px solid #853953; outline: none; }
-        QTextEdit { background-color: #1e1e1e; color: #F3F4F4; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; border: 1px solid #612D53; border-radius: 8px; padding: 8px; }
+        QProgressBar { background-color: #1e1e1e; color: #F3F4F4; border: 1px solid #853953; border-radius: 3px; text-align: center; font-size: 11px; font-weight: bold; height: 16px; }
+        QProgressBar::chunk { background-color: #853953; border-radius: 2px; }
+        QTextEdit { background-color: #1e1e1e; color: #F3F4F4; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; border: 1px solid #612D53; border-radius: 3px; padding: 8px; }
     )");
 
     QStringList args = app.arguments();
@@ -541,4 +695,5 @@ int main(int argc, char *argv[]) {
     window.show();
     return app.exec();
 }
+
 #include "main.moc"
