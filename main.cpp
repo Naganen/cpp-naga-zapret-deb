@@ -975,6 +975,19 @@ private:
         progressBar->setValue(0);
         spinner->start();
 
+        if (trayIcon && (!isVisible() || isMinimized())) {
+            trayIcon->showMessage(
+                "Naga Zapret",
+                isEnglish ? "Connection test started for Discord and Roblox..."
+                          : "Discord ve Roblox için bağlantı testi başlatıldı...",
+                QSystemTrayIcon::Information,
+                2500
+            );
+        }
+        if (actTrayStatus) {
+            actTrayStatus->setText(isEnglish ? "Status: Testing connection..." : "Durum: Bağlantı test ediliyor...");
+        }
+
         appendLog("=========================================");
         appendLog(isEnglish 
             ? "> Starting 10 live access tests for Discord and Roblox..." 
@@ -1007,7 +1020,7 @@ private:
             robloxProgress = 0;
             updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 0, 0);
 
-            runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
+            runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this, discordSuccessCount](int robloxSuccessCount) {
                 robloxSuccess = robloxSuccessCount;
                 if (robloxSuccessCount >= 5) {
                     robloxTestState = TestStatus::Success;
@@ -1026,6 +1039,29 @@ private:
                 spinner->stop();
                 progressBar->setValue(20);
                 setButtonsEnabled(true);
+
+                bool discordOk = (discordSuccessCount >= 5);
+                bool robloxOk = (robloxSuccessCount >= 5);
+                bool allOk = (discordOk && robloxOk);
+
+                if (trayIcon && (!isVisible() || isMinimized())) {
+                    QString title = allOk 
+                        ? (isEnglish ? "Connection Test Passed" : "Bağlantı Testi Başarılı")
+                        : (isEnglish ? "Connection Test Failed" : "Bağlantı Testi Başarısız");
+                    
+                    QString msg = isEnglish
+                        ? QString("Discord: %1/10 OK, Roblox: %2/10 OK. %3")
+                            .arg(discordSuccessCount)
+                            .arg(robloxSuccessCount)
+                            .arg(allOk ? "DPI bypass is active and healthy." : "Some services could not be reached.")
+                        : QString("Discord: %1/10 Başarılı, Roblox: %2/10 Başarılı. %3")
+                            .arg(discordSuccessCount)
+                            .arg(robloxSuccessCount)
+                            .arg(allOk ? "Sansür aşma servisi aktif ve sorunsuz." : "Bazı servislere erişilemedi.");
+
+                    trayIcon->showMessage(title, msg, allOk ? QSystemTrayIcon::Information : QSystemTrayIcon::Warning, 4500);
+                }
+                updateStatusLabel();
             });
         });
     }

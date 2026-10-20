@@ -1,8 +1,13 @@
 [Desktop Entry]
-Name=Naga Zapret GUI
-Comment=Zapret DPI Bypass UI by Naganen
+Name=Naga Zapret
+GenericName=DPI Bypass Control Center
+GenericName[tr]=DPI Sansür Aşma Kontrol Merkezi
+Comment=Modern Graphical Control Center for Zapret DPI Bypass
+Comment[tr]=Zapret DPI sansür aşma servisi için grafik kontrol merkezi
 Exec=/usr/bin/naga-zapret
-Icon=network-transmit-receive
+Icon=naga-zapret
 Terminal=false
 Type=Application
 Categories=Network;Utility;
+Keywords=zapret;dpi;discord;roblox;bypass;censorship;vpn;proxy;
+StartupNotify=true

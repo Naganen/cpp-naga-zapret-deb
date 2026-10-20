@@ -3,6 +3,19 @@ Version: 0.0.15
 Architecture: amd64
 Maintainer: Naganen <naganen@outlook.com.tr>
 Depends: libqt6widgets6, libqt6network6, pkexec, curl, jq, iptables, nftables
-Section: utils
+Section: net
 Priority: optional
-Description: Zapret DPI Bypass GUI by Naganen
+Homepage: https://github.com/Naganen/naga-zapret
+Icon: naga-zapret
+Description: Modern Graphical Control Center for Zapret DPI Bypass
+ Naga Zapret is an easy-to-use graphical user interface (GUI) designed
+ to bypass regional Deep Packet Inspection (DPI) censorship on Linux for
+ popular services such as Discord and Roblox.
+ .
+ Features:
+  * Complete 100% GUI experience with no terminal requirements
+  * One-click automated setup, service startup, and cleanup
+  * 10x real packet connectivity and latency testing
+  * Snappable real-time log console
+  * Bilingual UI support (Turkish and English)
+  * Background health check and system tray integration

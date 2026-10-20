@@ -1,8 +1,11 @@
 [Desktop Entry]
-Name=Naga Zapret Baglanti Kontrolu
-Comment=Sistem acilisinda DPI bypass durumunu denetler
+Name=Naga Zapret Autostart Watchdog
+Name[tr]=Naga Zapret Bağlantı Denetçisi
+Comment=Checks DPI bypass connectivity at startup
+Comment[tr]=Sistem açılışında DPI bypass bağlantısını denetler
 Exec=/usr/bin/naga-zapret --startup-check
+Icon=naga-zapret
 Terminal=false
 Type=Application
-Categories=Utility;
+Categories=Utility;Network;
 X-GNOME-Autostart-Delay=10
