@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-581bc6dc4ff091a6acbb799a55ba7a79 CMakeFiles/naga-zapret_autogen
-58da99c283248e7e0115bed75e2d5aa6 naga-zapret_autogen/timestamp
