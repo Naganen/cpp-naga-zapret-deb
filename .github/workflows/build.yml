@@ -30,6 +30,9 @@ jobs:
           # Derlenen binary dosyasını paket klasörüne kopyala
           mkdir -p naga-zapret-package/usr/bin
           cp build/naga-zapret naga-zapret-package/usr/bin/
+
+          chmod +x naga-zapret-package/usr/bin/naga-zapret
+          chmod +x naga-zapret-package/usr/share/naga-zapret/install.sh
           
           # İzinleri Linux standartlarına sabitle
           chmod 755 naga-zapret-package/DEBIAN
