@@ -264,7 +264,7 @@ protected:
     }
 };
 
-// Arka plan başlatıcı, ağ test edici ve Sistem Tepsisi (Tray Icon) denetleyicisi
+// Arka plan başlatıcı ve ağ test edici (--startup-check argümanı için)
 class StartupChecker : public QObject {
     Q_OBJECT
     int attempts = 0;
@@ -385,7 +385,6 @@ private:
                             3000
                         );
                     }
-                    // Başarılı olduktan 4 saniye sonra sessizce kapanır veya kullanıcı tepsiden kapatabilir
                     QTimer::singleShot(4000, qApp, &QApplication::quit);
                 } else {
                     cleanup(); 
@@ -592,6 +591,7 @@ public:
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
 
+        setupTrayIcon();
         updateUiTexts();
         checkStatus();
     }
@@ -605,14 +605,35 @@ protected:
     }
 
     void closeEvent(QCloseEvent *event) override {
-        if (logWindow) {
-            logWindow->deleteLater();
+        // Çıkış doğrudan tepsiden tetiklenmemişse pencereyi kapatmak yerine tepsiye gizle
+        if (!isQuitting && trayIcon && trayIcon->isVisible()) {
+            event->ignore();
+            hide();
+            if (logWindow && logWindow->isVisible()) {
+                logWindow->hide();
+            }
+            if (!hasShownTrayNotification) {
+                trayIcon->showMessage(
+                    "Naga Zapret",
+                    isEnglish ? "Application is running in the background. Click the tray icon to reopen."
+                              : "Uygulama arka planda çalışmaya devam ediyor. Açmak için tepsi simgesine tıklayın.",
+                    QSystemTrayIcon::Information,
+                    2500
+                );
+                hasShownTrayNotification = true;
+            }
+        } else {
+            if (logWindow) {
+                logWindow->deleteLater();
+            }
+            QWidget::closeEvent(event);
         }
-        QWidget::closeEvent(event);
     }
 
 private:
     bool isEnglish = false;
+    bool isQuitting = false;
+    bool hasShownTrayNotification = false;
     StatusState currentStatus = StatusState::Checking;
 
     TestStatus discordTestState = TestStatus::Untested;
@@ -622,6 +643,14 @@ private:
     TestStatus robloxTestState = TestStatus::Untested;
     int robloxProgress = 0;
     int robloxSuccess = 0;
+
+    QSystemTrayIcon *trayIcon = nullptr;
+    QMenu *trayMenu = nullptr;
+    QAction *actTrayStatus = nullptr;
+    QAction *actTrayShow = nullptr;
+    QAction *actTrayTest = nullptr;
+    QAction *actTrayLog = nullptr;
+    QAction *actTrayQuit = nullptr;
 
     LogWindow *logWindow;
     QLabel *lblGlobe;
@@ -641,6 +670,80 @@ private:
     QPushButton *btnTest;
 
     bool isRoot() { return geteuid() == 0; }
+
+    void setupTrayIcon() {
+        trayIcon = new QSystemTrayIcon(getAppIcon(), this);
+        trayMenu = new QMenu(this);
+        trayMenu->setStyleSheet(R"(
+            QMenu { 
+                background-color: #1e1b24; 
+                color: #f1f5f9; 
+                border: 1px solid #3d2438; 
+                padding: 4px; 
+                border-radius: 4px; 
+                font-family: 'Segoe UI', Ubuntu, sans-serif;
+            }
+            QMenu::item { 
+                padding: 7px 22px; 
+                font-size: 12px; 
+                border-radius: 3px; 
+            }
+            QMenu::item:selected { 
+                background-color: #96335d; 
+                color: #ffffff; 
+            }
+            QMenu::separator { 
+                height: 1px; 
+                background: #3d2438; 
+                margin: 4px 8px; 
+            }
+        )");
+
+        actTrayStatus = trayMenu->addAction(isEnglish ? "Status: Checking..." : "Durum: Kontrol Ediliyor...");
+        actTrayStatus->setEnabled(false);
+
+        trayMenu->addSeparator();
+
+        actTrayShow = trayMenu->addAction(isEnglish ? "Show Naga Zapret" : "Naga Zapret'i Göster");
+        connect(actTrayShow, &QAction::triggered, this, [this]() {
+            showNormal();
+            raise();
+            activateWindow();
+        });
+
+        actTrayTest = trayMenu->addAction(isEnglish ? "Run Connection Test" : "Bağlantı Testi Yap");
+        connect(actTrayTest, &QAction::triggered, this, &ZapretWindow::startMultiTests);
+
+        actTrayLog = trayMenu->addAction(isEnglish ? "Toggle Live Logs" : "Canlı Günlüğü Aç/Kapat");
+        connect(actTrayLog, &QAction::triggered, this, &ZapretWindow::toggleLogWindow);
+
+        trayMenu->addSeparator();
+
+        actTrayQuit = trayMenu->addAction(isEnglish ? "Exit Completely" : "Tamamen Çıkış Yap");
+        connect(actTrayQuit, &QAction::triggered, this, [this]() {
+            isQuitting = true;
+            if (logWindow) logWindow->deleteLater();
+            trayIcon->hide();
+            QApplication::quit();
+        });
+
+        trayIcon->setContextMenu(trayMenu);
+        trayIcon->setToolTip("Naga Zapret Control Center");
+        trayIcon->show();
+
+        connect(trayIcon, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::Trigger || reason == QSystemTrayIcon::DoubleClick) {
+                if (isVisible() && !isMinimized()) {
+                    hide();
+                    if (logWindow && logWindow->isVisible()) logWindow->hide();
+                } else {
+                    showNormal();
+                    raise();
+                    activateWindow();
+                }
+            }
+        });
+    }
 
     void snapLogWindow() {
         int targetX = this->geometry().x() + this->width() + 10;
@@ -687,6 +790,11 @@ private:
         btnStop->setText(isEnglish ? "Stop & Remove Zapret" : "Zapret Durdur ve Kaldır");
         btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi");
 
+        if (actTrayShow) actTrayShow->setText(isEnglish ? "Show Naga Zapret" : "Naga Zapret'i Göster");
+        if (actTrayTest) actTrayTest->setText(isEnglish ? "Run Connection Test" : "Bağlantı Testi Yap");
+        if (actTrayLog) actTrayLog->setText(isEnglish ? "Toggle Live Logs" : "Canlı Günlüğü Aç/Kapat");
+        if (actTrayQuit) actTrayQuit->setText(isEnglish ? "Exit Completely" : "Tamamen Çıkış Yap");
+
         logWindow->updateTexts(isEnglish);
         updateToggleLogText();
         updateStatusLabel();
@@ -729,6 +837,13 @@ private:
                 statusLabel->setText(isEnglish ? "Status: Removed" : "Durum: Kaldırıldı");
                 statusIconLabel->setPixmap(createStatusDot(QColor("#f87171")));
                 break;
+        }
+
+        if (actTrayStatus) {
+            actTrayStatus->setText(statusLabel->text());
+        }
+        if (trayIcon) {
+            trayIcon->setToolTip(QString("Naga Zapret - %1").arg(statusLabel->text()));
         }
     }
 
@@ -978,6 +1093,9 @@ private:
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setWindowIcon(getAppIcon());
+    // Pencereler kapandığında (X tuşuna basıldığında) uygulamanın sistem tepsisinde arka planda çalışmaya devam etmesi için
+    QApplication::setQuitOnLastWindowClosed(false);
+
     app.setStyleSheet(R"(
         QWidget { 
             background-color: #141418; 
@@ -1145,8 +1263,6 @@ int main(int argc, char *argv[]) {
 
     QStringList args = app.arguments();
     if (args.contains("--startup-check")) {
-        // Arka plan kontrolü sırasında sistem tepsisinde kalabilmesi için
-        QApplication::setQuitOnLastWindowClosed(false);
         StartupChecker checker;
         checker.runCheck();
         return app.exec();
