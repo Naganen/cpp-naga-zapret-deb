@@ -20,6 +20,8 @@ jobs:
 
       - name: Build Project
         run: |
+          # Windows'tan kalan eski önbellek ve build kalıntılarını temizle
+          rm -rf build
           cmake -B build -S .
           cmake --build build -j$(nproc)
 
