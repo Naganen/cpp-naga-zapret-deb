@@ -1,6 +1,6 @@
 # Naga Zapret Control Center (DPI Bypass GUI)
 
-[![Debian Package](https://img.shields.io/badge/Debian-0.0.11-red.svg?logo=debian)](https://github.com/Naganen/cpp-naga-zapret-deb)
+[![Debian Package](https://img.shields.io/badge/Debian-0.0.14-red.svg?logo=debian)](https://github.com/Naganen/naga-zapret)
 [![Qt Version](https://img.shields.io/badge/Qt-6-green.svg?logo=qt)](https://www.qt.io/)
 [![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg?logo=cplusplus)](https://en.cppreference.com/w/cpp/17)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20amd64-lightgrey.svg?logo=linux)](https://kernel.org)
@@ -11,6 +11,7 @@
 ---
 
 * [🇹🇷 Türkçe Dokümantasyon](#türkçe)
+  * [Neler Yeni? (v0.0.14)](#neler-yeni)
   * [Neden Naga Zapret? (Projenin Amacı)](#projenin-amacı)
   * [Konsol Açmadan Kurulum](#konsolsuz-kurulum)
   * [Konsol Açmadan Kullanım Rehberi](#konsolsuz-kullanım)
@@ -18,6 +19,7 @@
   * [Geliştiriciler İçin (Kaynak Kod & Terminal)](#geliştiriciler-için)
   * [Teşekkürler ve Atıflar](#teşekkürler-ve-atıflar)
 * [🇬🇧 English Documentation](#english)
+  * [What's New? (v0.0.14)](#whats-new)
   * [Why Naga Zapret? (Project Purpose)](#project-purpose)
   * [Console-Free GUI Installation](#gui-installation)
   * [Console-Free Usage Guide](#gui-usage)
@@ -30,6 +32,19 @@
 
 <a name="türkçe"></a>
 ## 🇹🇷 Türkçe
+
+<a name="neler-yeni"></a>
+### 🚀 Neler Yeni? (v0.0.14)
+
+Naga Zapret **v0.0.14** sürümü ile birlikte arayüzde ve kullanıcı deneyiminde büyük geliştirmeler yapıldı. Bu sürümle gelen yenilikler:
+
+* 🌐 **İngilizce Dil Desteği:** Uygulama artık İngilizce dil seçeneğiyle de kullanılabilir hale getirildi (sistem dili algılama ve açılır menü ile anlık geçiş).
+* 🗂️ **Ayrı Günlük (Log) Penceresi:** Günlük akışı ana uygulama penceresinden ayrıldı; artık işlemler ana pencerenin yanına kenetlenen çok daha temiz ve bağımsız bir pencerede takip edilebiliyor.
+* 🎨 **İkon Destekli Butonlar:** Kullanıcı deneyimini artırmak için butonlara ve durum göstergelerine özel vektörel ikonlar eklendi.
+* ⏳ **Canlı Yükleme Çubuğu (Loading Bar):** İşlemlerin gidişatını ve durumunu anlık olarak görebilmeniz için dönen yükleniyor simgesi ve canlı ilerleme çubuğu entegre edildi.
+* 💎 **Modern Arayüz Tasarımı:** Butonların ve bileşenlerin köşe keskinlikleri artırılarak daha modern bir görünüme kavuşturuldu, renk paleti ve kart yapıları güncellendi.
+
+---
 
 <a name="projenin-amacı"></a>
 ### 🎯 Neden Naga Zapret? (Projenin Amacı)
@@ -50,7 +65,7 @@ Linux dünyasında Discord, Roblox veya benzeri servislere uygulanan DPI (Derin 
 
 Herhangi bir terminal/uçbirim açmanıza gerek yoktur:
 
-1. **Paketi İndirin:** Projenin [Releases](https://github.com/Naganen/cpp-naga-zapret-deb/releases) sayfasından `naga-zapret-0.0.11_amd64.deb` dosyasını indirin.
+1. **Paketi İndirin:** Projenin [Releases](https://github.com/Naganen/naga-zapret/releases) sayfasından `naga-zapret-0.0.14_amd64.deb` dosyasını indirin.
 2. **Çift Tıklayın:** İndirdiğiniz `.deb` dosyasına çift tıklayın (veya sağ tıklayıp *Yazılım Kur*, *GDebi*, *Ubuntu Yazılım Merkezi* ya da *Discover* ile açın).
 3. **"Kur" Butonuna Basın:** Açılan pencerede **Kur (Install)** düğmesine tıklayın.
 4. **Şifrenizi Girin:** Sistem sizden kullanıcı şifrenizi istediğinde girin.
@@ -66,14 +81,14 @@ Herhangi bir terminal/uçbirim açmanıza gerek yoktur:
 * Arama çubuğuna **Naga Zapret** yazın ve çıkan simgeye tıklayın.
 
 #### 2. Zapret'i Kurma ve Başlatma
-* Uygulama penceresinde yeşil vurgulu **"Zapret Kur ve Başlat"** butonuna tıklayın.
+* Uygulama penceresinde yeşil/bordo vurgulu **"Zapret Kur ve Başlat"** butonuna tıklayın.
 * Ekrana gelen güvenli sistem yetkilendirme penceresine (Polkit) şifrenizi girin.
-* Uygulama penceresindeki siyah log ekranında kurulumun adım adım tamamlandığını göreceksiniz. Bittiğinde durum kutucuğu **"Durum: Çalışıyor"** olarak yeşile dönecektir.
+* Canlı yükleme çubuğu ve dönen gösterge ile sürecin ilerleyişini takip edin. Ayrıntılı terminal çıktılarını izlemek isterseniz **"Canlı Günlük Penceresini Aç"** butonuna tıklayabilirsiniz. Kurulum bittiğinde durum **"Durum: Aktif Çalışıyor"** olarak güncellenir.
 
 #### 3. Canlı Erişim & Gecikme Testi Yapma
-* Sağ üstteki **"Bağlantı Testi Yap"** butonuna tıklayın.
+* Sağ üstteki **"Bağlantı Testi"** butonuna tıklayın.
 * Uygulama, arka planda Discord ve Roblox servislerine 10'ar adet gerçek paket gönderir.
-* Gecikme sürelerini (milisaniye cinsinden) log alanından izleyebilir, test bitiminde yeşil **"Erişilebilir (10/10 OK)"** onayını görebilirsiniz.
+* Canlı ilerleme çubuğu 20 test adımını adım adım gösterir; test bitiminde yeşil **"Erişilebilir (10/10 OK)"** onayını görebilirsiniz. Dilerseniz gecikme sürelerini (milisaniye cinsinden) yan günlük konsolundan da takip edebilirsiniz.
 
 #### 4. Tek Tıkla Kaldırma ve İnterneti Normale Döndürme
 * DPI aşma servisini durdurmak veya tamamen kaldırmak istediğinizde **"Zapret Durdur ve Kaldır"** butonuna basmanız yeterlidir.
@@ -89,7 +104,10 @@ Herhangi bir terminal/uçbirim açmanıza gerek yoktur:
 <a name="özellikler"></a>
 ### ✨ Temel Özellikler
 
-* 🎨 **Tamamen Grafik Arayüz (Qt6):** Koyu temalı, temiz ve anlaşılır kontrol merkezi.
+* 🎨 **Tamamen Grafik Arayüz (Qt6):** Koyu temalı, temiz, keskin hatlı modern kontrol merkezi.
+* 🌐 **Çift Dil Desteği:** Türkçe ve İngilizce tam dil desteği (otomatik sistem dili algılama).
+* 🗂️ **Snaplenebilir Canlı Konsol:** Ana pencereden bağımsız açılan ve ana pencereyi takip eden log ekranı.
+* ⏳ **Görsel İlerleme Takibi:** Dönen yükleniyor animasyonu ve canlı ilerleme çubuğu.
 * 📦 **Akıllı Kurulum Motoru:** Arka planda çalışan ve [keift/zapret](https://github.com/keift/zapret) projesinden sağlanan otomatik yapılandırma betiği.
 * ⚡ **10x Canlı Paket Testi:** Discord ve Roblox'a anlık erişim doğrulama ve ms gecikme analizi.
 * 🛡️ **Polkit (`pkexec`) Koruması:** Terminal şifresi girmek yerine standart Linux yönetici onay penceresi.
@@ -107,7 +125,7 @@ Herhangi bir terminal/uçbirim açmanıza gerek yoktur:
 #### Terminal ile `.deb` Kurulumu:
 ```bash
 sudo apt update
-sudo apt install -y ./naga-zapret-0.0.11_amd64.deb
+sudo apt install -y ./naga-zapret-0.0.14_amd64.deb
 ```
 
 #### Bağımlılıklar:
@@ -133,7 +151,7 @@ make -j$(nproc)
 cp build/naga-zapret naga-zapret-package/usr/bin/
 chmod 755 naga-zapret-package/usr/bin/naga-zapret
 chmod 755 naga-zapret-package/usr/share/naga-zapret/install.sh
-dpkg-deb --build naga-zapret-package naga-zapret-0.0.11_amd64.deb
+dpkg-deb --build naga-zapret-package naga-zapret-0.0.14_amd64.deb
 ```
 </details>
 
@@ -151,6 +169,19 @@ Bu projenin arka planında çalışan sistem yapılandırmalarında açık kayna
 
 <a name="english"></a>
 ## 🇬🇧 English
+
+<a name="whats-new"></a>
+### 🚀 What's New? (v0.0.14)
+
+With the Naga Zapret **v0.0.14** release, significant enhancements were made to the interface and user experience. New features in this version:
+
+* 🌐 **English Language Support:** The application is now fully available with an English language option (automatic system locale detection and dynamic language switcher).
+* 🗂️ **Dedicated Log Window:** The live log feed was separated from the main application window; processes can now be monitored in a clean, standalone snapped console window.
+* 🎨 **Icon-Supported Buttons:** Handcrafted vector icons were added to all action buttons and status indicators for an intuitive visual experience.
+* ⏳ **Live Loading Bar:** An integrated progress bar and spinning loading indicator let you monitor live progress during installations and packet tests.
+* 💎 **Modern UI Design:** Button corner radiuses were sharpened for a sleek modern look, with a refined dark cyber color palette.
+
+---
 
 <a name="project-purpose"></a>
 ### 🎯 Why Naga Zapret? (Project Purpose)
@@ -171,7 +202,7 @@ On Linux systems, bypassing Deep Packet Inspection (DPI) and regional censorship
 
 No terminal required at any step:
 
-1. **Download:** Grab the latest `naga-zapret-0.0.11_amd64.deb` from the [Releases](https://github.com/Naganen/cpp-naga-zapret-deb/releases) page.
+1. **Download:** Grab the latest `naga-zapret-0.0.14_amd64.deb` from the [Releases](https://github.com/Naganen/naga-zapret/releases) page.
 2. **Double Click:** Double-click the downloaded `.deb` file (or right-click -> *Open with Software Install* / *GDebi* / *Discover* / *App Center*).
 3. **Click Install:** Hit the **Install** button on the package installer window.
 4. **Enter Password:** Type your user password when prompted by your desktop environment.
@@ -187,13 +218,13 @@ No terminal required at any step:
 * Search for **Naga Zapret** and click its icon.
 
 #### 2. Installing and Starting Zapret
-* Click the prominent **"Zapret Kur ve Başlat" (Install & Start)** button.
+* Click the prominent **"Install & Start Zapret"** button.
 * Enter your password in the standard graphical Polkit authentication window.
-* Follow real-time progress in the embedded log terminal. Once completed, the status label turns green: **"Durum: Çalışıyor" (Running)**.
+* Monitor progress with the live loading bar and spinner. To view verbose terminal output, click **"Show Live Logs Console"** to open the side console. Once completed, the status label turns green: **"Status: Running Active"**.
 
 #### 3. Running Live Connection Tests
-* Click **"Bağlantı Testi Yap" (Run Connection Test)**.
-* The application sends 10 real packets to Discord and Roblox, reporting latency in milliseconds and displaying a clear green/red success badge (e.g., `10/10 OK`).
+* Click **"Test Connection"**.
+* The application sends 10 real packets to Discord and Roblox, reporting latency in milliseconds and displaying a clear green/red success badge (e.g., `10/10 OK`). Progress can be observed on the live progress bar.
 
 #### 4. Clean Removal & DNS Restoration
 * If you ever want to remove Zapret, click **"Zapret Durdur ve Kaldır" (Stop & Uninstall)**.
@@ -209,7 +240,10 @@ No terminal required at any step:
 <a name="key-features"></a>
 ### ✨ Key Features
 
-* 🎨 **Pure Graphical Interface (Qt6):** Sleek, distraction-free dark control center.
+* 🎨 **Pure Graphical Interface (Qt6):** Sleek, sharp, distraction-free modern dark cyber control center.
+* 🌐 **Bilingual Support:** Full Turkish and English language support with automatic locale detection.
+* 🗂️ **Snappable Live Console:** Standalone log window that neatly docks next to the main application.
+* ⏳ **Visual Progress Tracking:** Integrated progress bar and rotating loader animation.
 * 📦 **Automated Setup Engine:** Sourced from [keift/zapret](https://github.com/keift/zapret) for multi-distro setup & DNS configuration.
 * ⚡ **10x Live Diagnostic Ping Test:** Real HTTP packet tests with millisecond latency tracking.
 * 🛡️ **Polkit Integration (`pkexec`):** Secure native administrative prompts without CLI passwords.
@@ -227,7 +261,7 @@ No terminal required at any step:
 #### Install via Terminal:
 ```bash
 sudo apt update
-sudo apt install -y ./naga-zapret-0.0.11_amd64.deb
+sudo apt install -y ./naga-zapret-0.0.14_amd64.deb
 ```
 
 #### Dependencies:
@@ -253,7 +287,7 @@ make -j$(nproc)
 cp build/naga-zapret naga-zapret-package/usr/bin/
 chmod 755 naga-zapret-package/usr/bin/naga-zapret
 chmod 755 naga-zapret-package/usr/share/naga-zapret/install.sh
-dpkg-deb --build naga-zapret-package naga-zapret-0.0.11_amd64.deb
+dpkg-deb --build naga-zapret-package naga-zapret-0.0.14_amd64.deb
 ```
 </details>
 
@@ -274,4 +308,4 @@ Naga Zapret relies on excellent open-source work by the community:
 
 * **Geliştirici / Author:** Alper YILDIRIM (Naganen)
 * **E-Posta / Email:** [naganen@outlook.com.tr](mailto:naganen@outlook.com.tr)
-* **GitHub Deposu / Repository:** [https://github.com/Naganen/cpp-naga-zapret-deb](https://github.com/Naganen/cpp-naga-zapret-deb)
+* **GitHub Deposu / Repository:** [https://github.com/Naganen/naga-zapret](https://github.com/Naganen/naga-zapret)

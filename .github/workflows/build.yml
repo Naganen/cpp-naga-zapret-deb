@@ -1,9 +1,7 @@
 name: Build and Package DEB
 
 on:
-  push:
-    branches:
-      - dev  # dev dalına yapılan push işlemlerinde otomatik çalışır
+  workflow_dispatch:  # Bu satır GitHub arayüzünde "Run workflow" butonu çıkmasını sağlar
 
 jobs:
   build:
