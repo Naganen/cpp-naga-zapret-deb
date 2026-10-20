@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QLabel>
+#include <QComboBox>
 #include <QProcess>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -13,6 +14,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QMessageBox>
+#include <QLocale>
 #include <unistd.h>
 
 // Arka plan başlatıcı ve ağ test edici
@@ -64,9 +66,12 @@ private:
     }
 
     void askUser() {
+        bool isEn = !QLocale::system().name().startsWith("tr", Qt::CaseInsensitive);
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Naga Zapret - Bağlantı Hatası");
-        msgBox.setText("Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini yeniden kurmak/başlatmak ister misiniz?");
+        msgBox.setWindowTitle(isEn ? "Naga Zapret - Connection Error" : "Naga Zapret - Bağlantı Hatası");
+        msgBox.setText(isEn 
+            ? "A connection issue with Discord/Roblox was detected at system startup.\n\nWould you like to reinstall/restart the censorship bypass service?"
+            : "Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini yeniden kurmak/başlatmak ister misiniz?");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setStyleSheet("background-color: #2C2C2C; color: #F3F4F4; font-size: 13px;");
@@ -81,6 +86,24 @@ private:
 class ZapretWindow : public QWidget {
     Q_OBJECT
 public:
+    enum class StatusState {
+        Checking,
+        Installed,
+        NotInstalled,
+        Installing,
+        Running,
+        Removing,
+        Removed
+    };
+
+    enum class TestStatus {
+        Untested,
+        Waiting,
+        Testing,
+        Success,
+        Failed
+    };
+
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
         resize(600, 680);
@@ -89,15 +112,30 @@ public:
         mainLayout->setSpacing(16);
         mainLayout->setContentsMargins(20, 20, 20, 20);
 
+        auto *headerLayout = new QHBoxLayout();
         auto *lblTitle = new QLabel("Naga Zapret Control Center", this);
         lblTitle->setObjectName("title");
-        mainLayout->addWidget(lblTitle);
+        headerLayout->addWidget(lblTitle);
+        headerLayout->addStretch();
+
+        langCombo = new QComboBox(this);
+        langCombo->setObjectName("langCombo");
+        langCombo->addItem("Türkçe", "tr");
+        langCombo->addItem("English", "en");
+        langCombo->setCursor(Qt::PointingHandCursor);
+
+        bool isSystemTr = QLocale::system().name().startsWith("tr", Qt::CaseInsensitive);
+        isEnglish = !isSystemTr;
+        langCombo->setCurrentIndex(isEnglish ? 1 : 0);
+
+        headerLayout->addWidget(langCombo);
+        mainLayout->addLayout(headerLayout);
 
         auto *statusCard = new QWidget(this);
         statusCard->setObjectName("card");
         auto *statusLayout = new QVBoxLayout(statusCard);
         
-        statusLabel = new QLabel("Durum: Kontrol Ediliyor...", this);
+        statusLabel = new QLabel(this);
         statusLabel->setObjectName("status");
         statusLayout->addWidget(statusLabel);
         mainLayout->addWidget(statusCard);
@@ -105,11 +143,11 @@ public:
         auto *actionLayout = new QHBoxLayout();
         actionLayout->setSpacing(10);
 
-        btnStart = new QPushButton("Zapret Kur ve Başlat", this);
+        btnStart = new QPushButton(this);
         btnStart->setObjectName("btnStart");
         btnStart->setCursor(Qt::PointingHandCursor);
 
-        btnStop = new QPushButton("Zapret Durdur ve Kaldır", this);
+        btnStop = new QPushButton(this);
         btnStop->setObjectName("btnStop");
         btnStop->setCursor(Qt::PointingHandCursor);
 
@@ -123,10 +161,10 @@ public:
         testLayout->setSpacing(10);
 
         auto *testHeaderLayout = new QHBoxLayout();
-        auto *lblTestTitle = new QLabel("Erişim Durumu (10x Paket Testi)", this);
+        lblTestTitle = new QLabel(this);
         lblTestTitle->setStyleSheet("font-weight: bold; color: #F3F4F4;");
         
-        btnTest = new QPushButton("Bağlantı Testi Yap", this);
+        btnTest = new QPushButton(this);
         btnTest->setObjectName("btnTest");
         btnTest->setCursor(Qt::PointingHandCursor);
 
@@ -135,8 +173,8 @@ public:
         testHeaderLayout->addWidget(btnTest);
         testLayout->addLayout(testHeaderLayout);
 
-        discordLabel = new QLabel("• Discord: Test Edilmedi", this);
-        robloxLabel = new QLabel("• Roblox: Test Edilmedi", this);
+        discordLabel = new QLabel(this);
+        robloxLabel = new QLabel(this);
         discordLabel->setStyleSheet("color: #d1d5db;");
         robloxLabel->setStyleSheet("color: #d1d5db;");
 
@@ -148,14 +186,33 @@ public:
         logArea->setReadOnly(true);
         mainLayout->addWidget(logArea);
 
+        connect(langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+            isEnglish = (index == 1);
+            updateUiTexts();
+        });
+
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
 
+        updateUiTexts();
         checkStatus();
     }
 
 private:
+    bool isEnglish = false;
+    StatusState currentStatus = StatusState::Checking;
+
+    TestStatus discordTestState = TestStatus::Untested;
+    int discordProgress = 0;
+    int discordSuccess = 0;
+
+    TestStatus robloxTestState = TestStatus::Untested;
+    int robloxProgress = 0;
+    int robloxSuccess = 0;
+
+    QComboBox *langCombo;
+    QLabel *lblTestTitle;
     QLabel *statusLabel;
     QLabel *discordLabel;
     QLabel *robloxLabel;
@@ -176,15 +233,88 @@ private:
         btnStart->setEnabled(enabled);
         btnStop->setEnabled(enabled);
         btnTest->setEnabled(enabled);
+        langCombo->setEnabled(enabled);
+    }
+
+    void updateUiTexts() {
+        lblTestTitle->setText(isEnglish ? "Access Status (10x Packet Test)" : "Erişim Durumu (10x Paket Testi)");
+        btnStart->setText(isEnglish ? "Install & Start Zapret" : "Zapret Kur ve Başlat");
+        btnStop->setText(isEnglish ? "Stop & Remove Zapret" : "Zapret Durdur ve Kaldır");
+        btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi Yap");
+
+        updateStatusLabel();
+        updateServiceLabel(discordLabel, "Discord", discordTestState, discordProgress, discordSuccess);
+        updateServiceLabel(robloxLabel, "Roblox", robloxTestState, robloxProgress, robloxSuccess);
+    }
+
+    void setStatus(StatusState state) {
+        currentStatus = state;
+        updateStatusLabel();
+    }
+
+    void updateStatusLabel() {
+        switch (currentStatus) {
+            case StatusState::Checking:
+                statusLabel->setText(isEnglish ? "Status: Checking..." : "Durum: Kontrol Ediliyor...");
+                statusLabel->setStyleSheet("color: #d1d5db;");
+                break;
+            case StatusState::Installed:
+                statusLabel->setText(isEnglish ? "Status: Zapret Installed" : "Durum: Zapret Kurulu");
+                statusLabel->setStyleSheet("color: #4ade80;");
+                break;
+            case StatusState::NotInstalled:
+                statusLabel->setText(isEnglish ? "Status: Not Installed" : "Durum: Kurulu Değil");
+                statusLabel->setStyleSheet("color: #d1d5db;");
+                break;
+            case StatusState::Installing:
+                statusLabel->setText(isEnglish ? "Status: Installing..." : "Durum: Kuruluyor...");
+                statusLabel->setStyleSheet("color: #f59e0b;");
+                break;
+            case StatusState::Running:
+                statusLabel->setText(isEnglish ? "Status: Running" : "Durum: Çalışıyor");
+                statusLabel->setStyleSheet("color: #4ade80;");
+                break;
+            case StatusState::Removing:
+                statusLabel->setText(isEnglish ? "Status: Removing..." : "Durum: Kaldırılıyor...");
+                statusLabel->setStyleSheet("color: #f59e0b;");
+                break;
+            case StatusState::Removed:
+                statusLabel->setText(isEnglish ? "Status: Removed" : "Durum: Kaldırıldı");
+                statusLabel->setStyleSheet("color: #f87171;");
+                break;
+        }
+    }
+
+    void updateServiceLabel(QLabel *lbl, const QString &serviceName, TestStatus state, int progress, int successCount) {
+        switch (state) {
+            case TestStatus::Untested:
+                lbl->setText(QString("• %1: %2").arg(serviceName, isEnglish ? "Not Tested" : "Test Edilmedi"));
+                lbl->setStyleSheet("color: #d1d5db;");
+                break;
+            case TestStatus::Waiting:
+                lbl->setText(QString("• %1: %2").arg(serviceName, isEnglish ? "Waiting..." : "Bekliyor..."));
+                lbl->setStyleSheet("color: #d1d5db;");
+                break;
+            case TestStatus::Testing:
+                lbl->setText(QString("• %1: %2 (%3/10)").arg(serviceName, isEnglish ? "Testing" : "Test Ediliyor").arg(progress));
+                lbl->setStyleSheet("color: #f59e0b;");
+                break;
+            case TestStatus::Success:
+                lbl->setText(QString("• %1: %2 (%3/10 OK)").arg(serviceName, isEnglish ? "Accessible" : "Erişilebilir").arg(successCount));
+                lbl->setStyleSheet("color: #4ade80; font-weight: bold;");
+                break;
+            case TestStatus::Failed:
+                lbl->setText(QString("• %1: %2 (%3/10 OK)").arg(serviceName, isEnglish ? "Inaccessible" : "Erişilemedi").arg(successCount));
+                lbl->setStyleSheet("color: #f87171; font-weight: bold;");
+                break;
+        }
     }
 
     void checkStatus() {
         if (QFileInfo::exists("/opt/zapret")) {
-            statusLabel->setText("Durum: Zapret Kurulu");
-            statusLabel->setStyleSheet("color: #4ade80;");
+            setStatus(StatusState::Installed);
         } else {
-            statusLabel->setText("Durum: Kurulu Değil");
-            statusLabel->setStyleSheet("color: #d1d5db;");
+            setStatus(StatusState::NotInstalled);
         }
     }
 
@@ -211,9 +341,10 @@ private:
 
     void startZapret() {
         setButtonsEnabled(false);
-        appendLog("> Sizin özel kurulum betiğiniz (install.sh) başlatılıyor...");
-        statusLabel->setText("Durum: Kuruluyor...");
-        statusLabel->setStyleSheet("color: #f59e0b;");
+        appendLog(isEnglish 
+            ? "> Starting your custom installation script (install.sh)..." 
+            : "> Sizin özel kurulum betiğiniz (install.sh) başlatılıyor...");
+        setStatus(StatusState::Installing);
 
         // Gönderdiğiniz install.sh doğrudan tetiklenir, C++ hiçbir işleme müdahale etmez.
         QString cmd = "chmod +x /usr/share/naga-zapret/install.sh && bash /usr/share/naga-zapret/install.sh";
@@ -221,12 +352,15 @@ private:
         runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
             if (exitCode == 0) {
-                appendLog("> Kurulum scripti tamamlandı!");
-                statusLabel->setText("Durum: Çalışıyor");
-                statusLabel->setStyleSheet("color: #4ade80;");
+                appendLog(isEnglish 
+                    ? "> Installation script completed!" 
+                    : "> Kurulum scripti tamamlandı!");
+                setStatus(StatusState::Running);
                 startMultiTests();
             } else {
-                appendLog(QString("> Hata: Script çalışmayı durdurdu (Çıkış: %1).").arg(exitCode));
+                appendLog(isEnglish 
+                    ? QString("> Error: Script stopped running (Exit: %1).").arg(exitCode)
+                    : QString("> Hata: Script çalışmayı durdurdu (Çıkış: %1).").arg(exitCode));
                 checkStatus();
             }
         });
@@ -234,9 +368,10 @@ private:
 
     void stopZapret() {
         setButtonsEnabled(false);
-        appendLog("> Zapret durduruluyor ve sistem temizleniyor...");
-        statusLabel->setText("Durum: Kaldırılıyor...");
-        statusLabel->setStyleSheet("color: #f59e0b;");
+        appendLog(isEnglish 
+            ? "> Stopping Zapret and cleaning up system..." 
+            : "> Zapret durduruluyor ve sistem temizleniyor...");
+        setStatus(StatusState::Removing);
 
         // Sizin scriptteki mantığa uygun olarak DNS açma ve Zapret silme
         QString cmd = "echo -e 'Y\\n\\n' | /opt/zapret/uninstall_easy.sh 2>/dev/null; "
@@ -251,9 +386,10 @@ private:
 
         runCommandAsRoot(cmd, [this](int exitCode) {
             setButtonsEnabled(true);
-            appendLog("> Zapret kaldırıldı. İnternet normale döndü.");
-            statusLabel->setText("Durum: Kaldırıldı");
-            statusLabel->setStyleSheet("color: #f87171;");
+            appendLog(isEnglish 
+                ? "> Zapret removed. Internet restored to normal." 
+                : "> Zapret kaldırıldı. İnternet normale döndü.");
+            setStatus(StatusState::Removed);
             checkStatus();
         });
     }
@@ -261,38 +397,52 @@ private:
     void startMultiTests() {
         setButtonsEnabled(false);
         appendLog("=========================================");
-        appendLog("> Discord ve Roblox için 10'ar adet canlı erişim testi başlatılıyor...");
+        appendLog(isEnglish 
+            ? "> Starting 10 live access tests for Discord and Roblox..." 
+            : "> Discord ve Roblox için 10'ar adet canlı erişim testi başlatılıyor...");
         
-        discordLabel->setText("• Discord: Test Ediliyor (0/10)");
-        discordLabel->setStyleSheet("color: #f59e0b;");
-        robloxLabel->setText("• Roblox: Bekliyor...");
-        robloxLabel->setStyleSheet("color: #d1d5db;");
+        discordTestState = TestStatus::Testing;
+        discordProgress = 0;
+        updateServiceLabel(discordLabel, "Discord", discordTestState, 0, 0);
+
+        robloxTestState = TestStatus::Waiting;
+        updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 0, 0);
 
         runPingTest("Discord", "https://discord.com", 1, 0, [this](int discordSuccessCount) {
+            discordSuccess = discordSuccessCount;
             if (discordSuccessCount >= 5) {
-                discordLabel->setText(QString("• Discord: Erişilebilir (%1/10 OK)").arg(discordSuccessCount));
-                discordLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                appendLog(QString("> [SONUÇ] Discord erişilebilir (%1/10 başarı).").arg(discordSuccessCount));
+                discordTestState = TestStatus::Success;
+                appendLog(isEnglish 
+                    ? QString("> [RESULT] Discord accessible (%1/10 success).").arg(discordSuccessCount)
+                    : QString("> [SONUÇ] Discord erişilebilir (%1/10 başarı).").arg(discordSuccessCount));
             } else {
-                discordLabel->setText(QString("• Discord: Erişilemedi (%1/10 OK)").arg(discordSuccessCount));
-                discordLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                appendLog(QString("> [SONUÇ] Discord erişilemedi (%1/10 başarı).").arg(discordSuccessCount));
+                discordTestState = TestStatus::Failed;
+                appendLog(isEnglish 
+                    ? QString("> [RESULT] Discord inaccessible (%1/10 success).").arg(discordSuccessCount)
+                    : QString("> [SONUÇ] Discord erişilemedi (%1/10 başarı).").arg(discordSuccessCount));
             }
+            updateServiceLabel(discordLabel, "Discord", discordTestState, 10, discordSuccess);
 
             appendLog("-----------------------------------------");
-            robloxLabel->setText("• Roblox: Test Ediliyor (0/10)");
-            robloxLabel->setStyleSheet("color: #f59e0b;");
+            robloxTestState = TestStatus::Testing;
+            robloxProgress = 0;
+            updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 0, 0);
 
             runPingTest("Roblox", "https://www.roblox.com", 1, 0, [this](int robloxSuccessCount) {
+                robloxSuccess = robloxSuccessCount;
                 if (robloxSuccessCount >= 5) {
-                    robloxLabel->setText(QString("• Roblox: Erişilebilir (%1/10 OK)").arg(robloxSuccessCount));
-                    robloxLabel->setStyleSheet("color: #4ade80; font-weight: bold;");
-                    appendLog(QString("> [SONUÇ] Roblox erişilebilir (%1/10 başarı).").arg(robloxSuccessCount));
+                    robloxTestState = TestStatus::Success;
+                    appendLog(isEnglish 
+                        ? QString("> [RESULT] Roblox accessible (%1/10 success).").arg(robloxSuccessCount)
+                        : QString("> [SONUÇ] Roblox erişilebilir (%1/10 başarı).").arg(robloxSuccessCount));
                 } else {
-                    robloxLabel->setText(QString("• Roblox: Erişilemedi (%1/10 OK)").arg(robloxSuccessCount));
-                    robloxLabel->setStyleSheet("color: #f87171; font-weight: bold;");
-                    appendLog(QString("> [SONUÇ] Roblox erişilemedi (%1/10 başarı).").arg(robloxSuccessCount));
+                    robloxTestState = TestStatus::Failed;
+                    appendLog(isEnglish 
+                        ? QString("> [RESULT] Roblox inaccessible (%1/10 success).").arg(robloxSuccessCount)
+                        : QString("> [SONUÇ] Roblox erişilemedi (%1/10 başarı).").arg(robloxSuccessCount));
                 }
+                updateServiceLabel(robloxLabel, "Roblox", robloxTestState, 10, robloxSuccess);
+
                 appendLog("=========================================");
                 setButtonsEnabled(true);
             });
@@ -302,8 +452,13 @@ private:
     void runPingTest(const QString &serviceName, const QString &url, int currentAttempt, int successCount, std::function<void(int)> onComplete) {
         if (currentAttempt > 10) { onComplete(successCount); return; }
 
-        if (serviceName == "Discord") discordLabel->setText(QString("• Discord: Test Ediliyor (%1/10)").arg(currentAttempt));
-        else if (serviceName == "Roblox") robloxLabel->setText(QString("• Roblox: Test Ediliyor (%1/10)").arg(currentAttempt));
+        if (serviceName == "Discord") {
+            discordProgress = currentAttempt;
+            updateServiceLabel(discordLabel, "Discord", TestStatus::Testing, currentAttempt, successCount);
+        } else if (serviceName == "Roblox") {
+            robloxProgress = currentAttempt;
+            updateServiceLabel(robloxLabel, "Roblox", TestStatus::Testing, currentAttempt, successCount);
+        }
 
         auto *manager = new QNetworkAccessManager(this);
         QNetworkRequest request((QUrl(url)));
@@ -320,7 +475,9 @@ private:
 
         connect(timer, &QTimer::timeout, [this, reply, serviceName, url, currentAttempt, successCount, onComplete, cleanup]() {
             reply->abort();
-            appendLog(QString(" > [%1 %2/10] Zaman Aşımı (Timeout - 3000ms)").arg(serviceName).arg(currentAttempt));
+            appendLog(isEnglish 
+                ? QString(" > [%1 %2/10] Timeout (3000ms)").arg(serviceName).arg(currentAttempt)
+                : QString(" > [%1 %2/10] Zaman Aşımı (Timeout - 3000ms)").arg(serviceName).arg(currentAttempt));
             cleanup();
             runPingTest(serviceName, url, currentAttempt + 1, successCount, onComplete);
         });
@@ -332,8 +489,15 @@ private:
                 bool isSuccess = (reply->error() == QNetworkReply::NoError);
                 int newSuccessCount = successCount + (isSuccess ? 1 : 0);
 
-                if (isSuccess) appendLog(QString(" > [%1 %2/10] Başarılı - Yanıt: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime));
-                else appendLog(QString(" > [%1 %2/10] Başarısız - Hata: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString()));
+                if (isSuccess) {
+                    appendLog(isEnglish 
+                        ? QString(" > [%1 %2/10] Success - Response: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime)
+                        : QString(" > [%1 %2/10] Başarılı - Yanıt: %3 ms").arg(serviceName).arg(currentAttempt).arg(responseTime));
+                } else {
+                    appendLog(isEnglish 
+                        ? QString(" > [%1 %2/10] Failed - Error: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString())
+                        : QString(" > [%1 %2/10] Başarısız - Hata: %3").arg(serviceName).arg(currentAttempt).arg(reply->errorString()));
+                }
 
                 cleanup();
                 runPingTest(serviceName, url, currentAttempt + 1, newSuccessCount, onComplete);
@@ -359,6 +523,10 @@ int main(int argc, char *argv[]) {
         QPushButton#btnTest { background-color: #612D53; border: 1px solid #853953; }
         QPushButton#btnTest:hover { background-color: #7a3869; }
         QPushButton:disabled { background-color: #1e1e1e; color: #666666; border: none; }
+        QComboBox#langCombo { background-color: #44213a; color: #F3F4F4; border: 1px solid #853953; border-radius: 6px; padding: 4px 10px; font-weight: bold; font-size: 12px; }
+        QComboBox#langCombo:hover { background-color: #582b4b; }
+        QComboBox#langCombo::drop-down { border: none; }
+        QComboBox#langCombo QAbstractItemView { background-color: #2C2C2C; color: #F3F4F4; selection-background-color: #853953; selection-color: #F3F4F4; border: 1px solid #853953; outline: none; }
         QTextEdit { background-color: #1e1e1e; color: #F3F4F4; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; border: 1px solid #612D53; border-radius: 8px; padding: 8px; }
     )");
 
@@ -373,5 +541,4 @@ int main(int argc, char *argv[]) {
     window.show();
     return app.exec();
 }
-
 #include "main.moc"
