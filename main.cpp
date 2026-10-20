@@ -20,19 +20,87 @@
 #include <QPen>
 #include <QColor>
 #include <QPixmap>
+#include <QIcon>
+#include <QMoveEvent>
+#include <QCloseEvent>
 #include <unistd.h>
 
-// Sistem fontuna veya emoji desteğine bağımlı olmayan vektörel dünya ikonu
+// Harici font veya resim dosyası gerektirmeyen vektörel ikon üreticileri
 static QPixmap createGlobePixmap(int size, const QColor &color) {
     QPixmap pix(size, size);
     pix.fill(Qt::transparent);
     QPainter p(&pix);
     p.setRenderHint(QPainter::Antialiasing);
-    QPen pen(color, 1.6);
+    QPen pen(color, 1.5);
     p.setPen(pen);
     p.drawEllipse(1, 1, size - 2, size - 2);
     p.drawLine(1, size / 2, size - 1, size / 2);
     p.drawEllipse(size / 4, 1, size / 2, size - 2);
+    return pix;
+}
+
+static QIcon createPlayIcon(int size, const QColor &color) {
+    QPixmap pix(size, size);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(color);
+    p.setPen(Qt::NoPen);
+    QPolygonF triangle;
+    triangle << QPointF(size * 0.25, size * 0.15)
+             << QPointF(size * 0.85, size * 0.5)
+             << QPointF(size * 0.25, size * 0.85);
+    p.drawPolygon(triangle);
+    return QIcon(pix);
+}
+
+static QIcon createStopIcon(int size, const QColor &color) {
+    QPixmap pix(size, size);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(color);
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(QRectF(size * 0.2, size * 0.2, size * 0.6, size * 0.6), 2, 2);
+    return QIcon(pix);
+}
+
+static QIcon createRadarIcon(int size, const QColor &color) {
+    QPixmap pix(size, size);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPen pen(color, 1.6, Qt::SolidLine, Qt::RoundCap);
+    p.setPen(pen);
+    p.drawArc(2, 2, size - 4, size - 4, 45 * 16, 90 * 16);
+    p.drawArc(4, 4, size - 8, size - 8, 45 * 16, 90 * 16);
+    p.setBrush(color);
+    p.drawEllipse(size / 2 - 2, size / 2 - 2, 4, 4);
+    p.drawLine(size / 2, size / 2, size * 0.8, size * 0.2);
+    return QIcon(pix);
+}
+
+static QIcon createTerminalIcon(int size, const QColor &color) {
+    QPixmap pix(size, size);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPen pen(color, 1.8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    p.setPen(pen);
+    p.drawLine(size * 0.2, size * 0.25, size * 0.45, size * 0.5);
+    p.drawLine(size * 0.45, size * 0.5, size * 0.2, size * 0.75);
+    p.drawLine(size * 0.55, size * 0.75, size * 0.82, size * 0.75);
+    return QIcon(pix);
+}
+
+static QPixmap createStatusDot(const QColor &color) {
+    QPixmap pix(10, 10);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(color);
+    p.setPen(Qt::NoPen);
+    p.drawEllipse(1, 1, 8, 8);
     return pix;
 }
 
@@ -54,9 +122,7 @@ public:
 
     void start() {
         spinning = true;
-        if (!timer->isActive()) {
-            timer->start(60);
-        }
+        if (!timer->isActive()) timer->start(60);
         show();
         update();
     }
@@ -68,8 +134,6 @@ public:
         update();
     }
 
-    bool isSpinning() const { return spinning; }
-
 protected:
     void paintEvent(QPaintEvent *) override {
         if (!spinning) return;
@@ -78,9 +142,73 @@ protected:
         p.translate(width() / 2, height() / 2);
         p.rotate(angle);
 
-        QPen pen(QColor("#a04565"), 3, Qt::SolidLine, Qt::RoundCap);
+        QPen pen(QColor("#c04278"), 2.5, Qt::SolidLine, Qt::RoundCap);
         p.setPen(pen);
         p.drawArc(-8, -8, 16, 16, 0, 270 * 16);
+    }
+};
+
+// Ana pencerenin yanına yapışan (snap olan) Canlı Günlük Penceresi
+// Bağımsız Qt::Window olarak focus/etkileşim sorunsuz çalışır, closeEvent ignore edilerek hızlı gizlenir.
+class LogWindow : public QWidget {
+    Q_OBJECT
+    QTextEdit *logArea;
+    QLabel *lblTitle;
+    QPushButton *btnClear;
+    std::function<void()> onCloseCallback;
+public:
+    LogWindow(QWidget *parent = nullptr) : QWidget(parent, Qt::Window) {
+        setWindowTitle("Naga Zapret - Live Logs");
+        resize(440, 480);
+        setFocusPolicy(Qt::StrongFocus);
+
+        auto *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(14, 14, 14, 14);
+        layout->setSpacing(10);
+
+        auto *headerLayout = new QHBoxLayout();
+        lblTitle = new QLabel(this);
+        lblTitle->setStyleSheet("font-weight: bold; font-size: 13px; color: #F3F4F4;");
+        headerLayout->addWidget(lblTitle);
+        headerLayout->addStretch();
+
+        btnClear = new QPushButton(this);
+        btnClear->setObjectName("btnClearLog");
+        btnClear->setCursor(Qt::PointingHandCursor);
+        connect(btnClear, &QPushButton::clicked, this, [this]() {
+            logArea->clear();
+        });
+        headerLayout->addWidget(btnClear);
+        layout->addLayout(headerLayout);
+
+        logArea = new QTextEdit(this);
+        logArea->setReadOnly(true);
+        logArea->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+        layout->addWidget(logArea);
+
+        updateTexts(false);
+    }
+
+    void setOnCloseCallback(std::function<void()> cb) { onCloseCallback = cb; }
+
+    void updateTexts(bool isEnglish) {
+        lblTitle->setText(isEnglish ? "Live Console & Logs" : "Canlı Sistem Günlüğü");
+        btnClear->setText(isEnglish ? "Clear Log" : "Günlüğü Temizle");
+        setWindowTitle(isEnglish ? "Naga Zapret - Live Logs" : "Naga Zapret - Canlı Günlük");
+    }
+
+    void appendLog(const QString &text) {
+        logArea->append(text);
+        logArea->ensureCursorVisible();
+        QApplication::processEvents();
+    }
+
+protected:
+    void closeEvent(QCloseEvent *event) override {
+        // Pencereyi yok etmek yerine gizleyerek WSLg'deki destroy gecikmesini önler
+        event->ignore();
+        hide();
+        if (onCloseCallback) onCloseCallback();
     }
 };
 
@@ -141,7 +269,7 @@ private:
             : "Sistem açılışında Discord/Roblox bağlantısında sorun tespit edildi.\n\nSansür aşma servisini yeniden kurmak/başlatmak ister misiniz?");
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setStyleSheet("background-color: #2C2C2C; color: #F3F4F4; font-size: 13px;");
+        msgBox.setStyleSheet("background-color: #1a1a20; color: #F3F4F4; font-size: 13px;");
 
         if (msgBox.exec() == QMessageBox::Yes) {
             QProcess::startDetached("pkexec", QStringList() << "bash" << "/usr/share/naga-zapret/install.sh");
@@ -173,26 +301,38 @@ public:
 
     ZapretWindow() {
         setWindowTitle("Naga Zapret - DPI Bypass Tool");
-        resize(600, 430);
+        
+        // Pencere boyutunu tamamen sabitleyerek alttan/kenarlardan boyunun değişmesini engeller
+        setFixedSize(560, 480);
+
+        // Bağımsız top-level pencere olarak oluşturulur, böylece WSLg'de tam etkileşimli kalır
+        logWindow = new LogWindow(nullptr);
+        logWindow->setOnCloseCallback([this]() {
+            updateToggleLogText();
+        });
 
         auto *mainLayout = new QVBoxLayout(this);
         mainLayout->setAlignment(Qt::AlignTop);
         mainLayout->setSpacing(14);
-        mainLayout->setContentsMargins(20, 20, 20, 20);
+        mainLayout->setContentsMargins(22, 22, 22, 22);
 
+        // Header
         auto *headerLayout = new QHBoxLayout();
-        auto *lblTitle = new QLabel("Naga Zapret Control Center", this);
+        auto *lblTitle = new QLabel("Naga Zapret", this);
         lblTitle->setObjectName("title");
         headerLayout->addWidget(lblTitle);
+
+        auto *lblSubtitle = new QLabel("Control Center", this);
+        lblSubtitle->setObjectName("subtitle");
+        headerLayout->addWidget(lblSubtitle);
         headerLayout->addStretch();
 
         lblGlobe = new QLabel(this);
-        lblGlobe->setPixmap(createGlobePixmap(16, QColor("#F3F4F4")));
+        lblGlobe->setPixmap(createGlobePixmap(16, QColor("#cbd5e1")));
         headerLayout->addWidget(lblGlobe);
 
         lblLang = new QLabel("Dil:", this);
         lblLang->setObjectName("lblLang");
-        lblLang->setStyleSheet("font-size: 13px; font-weight: bold; color: #F3F4F4;");
         headerLayout->addWidget(lblLang);
 
         langCombo = new QComboBox(this);
@@ -208,42 +348,55 @@ public:
         headerLayout->addWidget(langCombo);
         mainLayout->addLayout(headerLayout);
 
+        // Status Card
         auto *statusCard = new QWidget(this);
-        statusCard->setObjectName("card");
-        auto *statusLayout = new QVBoxLayout(statusCard);
+        statusCard->setObjectName("cardStatus");
+        auto *statusLayout = new QHBoxLayout(statusCard);
+        statusLayout->setContentsMargins(16, 14, 16, 14);
         
+        statusIconLabel = new QLabel(this);
+        statusIconLabel->setPixmap(createStatusDot(QColor("#94a3b8")));
+        statusLayout->addWidget(statusIconLabel);
+
         statusLabel = new QLabel(this);
         statusLabel->setObjectName("status");
         statusLayout->addWidget(statusLabel);
+        statusLayout->addStretch();
         mainLayout->addWidget(statusCard);
 
+        // Actions
         auto *actionLayout = new QHBoxLayout();
-        actionLayout->setSpacing(10);
+        actionLayout->setSpacing(12);
 
         btnStart = new QPushButton(this);
         btnStart->setObjectName("btnStart");
         btnStart->setCursor(Qt::PointingHandCursor);
+        btnStart->setIcon(createPlayIcon(14, QColor("#FFFFFF")));
 
         btnStop = new QPushButton(this);
         btnStop->setObjectName("btnStop");
         btnStop->setCursor(Qt::PointingHandCursor);
+        btnStop->setIcon(createStopIcon(14, QColor("#F3F4F4")));
 
         actionLayout->addWidget(btnStart);
         actionLayout->addWidget(btnStop);
         mainLayout->addLayout(actionLayout);
 
+        // Test Card
         auto *testCard = new QWidget(this);
         testCard->setObjectName("card");
         auto *testLayout = new QVBoxLayout(testCard);
-        testLayout->setSpacing(10);
+        testLayout->setContentsMargins(16, 14, 16, 14);
+        testLayout->setSpacing(12);
 
         auto *testHeaderLayout = new QHBoxLayout();
         lblTestTitle = new QLabel(this);
-        lblTestTitle->setStyleSheet("font-weight: bold; color: #F3F4F4;");
+        lblTestTitle->setStyleSheet("font-weight: 700; font-size: 13px; color: #f1f5f9;");
         
         btnTest = new QPushButton(this);
         btnTest->setObjectName("btnTest");
         btnTest->setCursor(Qt::PointingHandCursor);
+        btnTest->setIcon(createRadarIcon(14, QColor("#f1f5f9")));
 
         testHeaderLayout->addWidget(lblTestTitle);
         testHeaderLayout->addStretch();
@@ -252,17 +405,17 @@ public:
 
         discordLabel = new QLabel(this);
         robloxLabel = new QLabel(this);
-        discordLabel->setStyleSheet("color: #d1d5db;");
-        robloxLabel->setStyleSheet("color: #d1d5db;");
+        discordLabel->setStyleSheet("color: #94a3b8; font-size: 13px;");
+        robloxLabel->setStyleSheet("color: #94a3b8; font-size: 13px;");
 
         testLayout->addWidget(discordLabel);
         testLayout->addWidget(robloxLabel);
         mainLayout->addWidget(testCard);
 
-        // İlerleme çubuğu ve dönen spinner alanı
+        // Progress bar ve spinner
         progressContainer = new QWidget(this);
         auto *progressLayout = new QHBoxLayout(progressContainer);
-        progressLayout->setContentsMargins(0, 0, 0, 0);
+        progressLayout->setContentsMargins(0, 4, 0, 0);
         progressLayout->setSpacing(10);
 
         spinner = new SpinnerWidget(this);
@@ -275,17 +428,12 @@ public:
         progressContainer->setVisible(false);
         mainLayout->addWidget(progressContainer);
 
-        // Kapatılıp açılabilir günlük (log) alanı
+        // Yan pencereyi açan günlük butonu
         btnToggleLog = new QPushButton(this);
         btnToggleLog->setObjectName("btnToggleLog");
         btnToggleLog->setCursor(Qt::PointingHandCursor);
+        btnToggleLog->setIcon(createTerminalIcon(14, QColor("#cbd5e1")));
         mainLayout->addWidget(btnToggleLog);
-
-        logArea = new QTextEdit(this);
-        logArea->setReadOnly(true);
-        logArea->setFixedHeight(170);
-        logArea->setVisible(false); // Varsayılan olarak kapalı
-        mainLayout->addWidget(logArea);
 
         connect(langCombo, QOverload<int>::of(&QComboBox::activated), this, [this](int index) {
             isEnglish = (index == 1);
@@ -293,23 +441,28 @@ public:
             updateUiTexts();
         });
 
-        connect(btnToggleLog, &QPushButton::clicked, this, [this]() {
-            bool willShow = !logArea->isVisible();
-            logArea->setVisible(willShow);
-            updateToggleLogText();
-            if (willShow) {
-                resize(width(), height() + 184);
-            } else {
-                resize(width(), height() - 184);
-            }
-        });
-
+        connect(btnToggleLog, &QPushButton::clicked, this, &ZapretWindow::toggleLogWindow);
         connect(btnStart, &QPushButton::clicked, this, &ZapretWindow::startZapret);
         connect(btnStop, &QPushButton::clicked, this, &ZapretWindow::stopZapret);
         connect(btnTest, &QPushButton::clicked, this, &ZapretWindow::startMultiTests);
 
         updateUiTexts();
         checkStatus();
+    }
+
+protected:
+    void moveEvent(QMoveEvent *event) override {
+        QWidget::moveEvent(event);
+        if (logWindow && logWindow->isVisible()) {
+            snapLogWindow();
+        }
+    }
+
+    void closeEvent(QCloseEvent *event) override {
+        if (logWindow) {
+            logWindow->deleteLater();
+        }
+        QWidget::closeEvent(event);
     }
 
 private:
@@ -324,28 +477,46 @@ private:
     int robloxProgress = 0;
     int robloxSuccess = 0;
 
+    LogWindow *logWindow;
     QLabel *lblGlobe;
     QLabel *lblLang;
     QComboBox *langCombo;
-    QLabel *lblTestTitle;
+    QLabel *statusIconLabel;
     QLabel *statusLabel;
+    QLabel *lblTestTitle;
     QLabel *discordLabel;
     QLabel *robloxLabel;
     QWidget *progressContainer;
     SpinnerWidget *spinner;
     QProgressBar *progressBar;
     QPushButton *btnToggleLog;
-    QTextEdit *logArea;
     QPushButton *btnStart;
     QPushButton *btnStop;
     QPushButton *btnTest;
 
     bool isRoot() { return geteuid() == 0; }
 
+    void snapLogWindow() {
+        int targetX = this->geometry().x() + this->width() + 10;
+        int targetY = this->geometry().y();
+        logWindow->resize(440, this->height());
+        logWindow->move(targetX, targetY);
+    }
+
+    void toggleLogWindow() {
+        if (logWindow->isVisible()) {
+            logWindow->hide();
+        } else {
+            snapLogWindow();
+            logWindow->show();
+            logWindow->raise();
+            logWindow->activateWindow();
+        }
+        updateToggleLogText();
+    }
+
     void appendLog(const QString &text) {
-        logArea->append(text);
-        logArea->ensureCursorVisible();
-        QApplication::processEvents();
+        logWindow->appendLog(text);
     }
 
     void setButtonsEnabled(bool enabled) {
@@ -356,20 +527,21 @@ private:
     }
 
     void updateToggleLogText() {
-        if (logArea->isVisible()) {
-            btnToggleLog->setText(isEnglish ? "▲ Hide Logs" : "▲ Günlüğü Gizle");
+        if (logWindow && logWindow->isVisible()) {
+            btnToggleLog->setText(isEnglish ? "Hide Live Logs Console" : "Canlı Günlük Penceresini Kapat");
         } else {
-            btnToggleLog->setText(isEnglish ? "▼ Show Logs" : "▼ Günlüğü Göster");
+            btnToggleLog->setText(isEnglish ? "Show Live Logs Console" : "Canlı Günlük Penceresini Aç");
         }
     }
 
     void updateUiTexts() {
         lblLang->setText(isEnglish ? "Language:" : "Dil:");
-        lblTestTitle->setText(isEnglish ? "Access Status (10x Packet Test)" : "Erişim Durumu (10x Paket Testi)");
+        lblTestTitle->setText(isEnglish ? "Access Status (10x Packet Test)" : "Erişim Durumu (10x Canlı Paket Testi)");
         btnStart->setText(isEnglish ? "Install & Start Zapret" : "Zapret Kur ve Başlat");
         btnStop->setText(isEnglish ? "Stop & Remove Zapret" : "Zapret Durdur ve Kaldır");
-        btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi Yap");
+        btnTest->setText(isEnglish ? "Test Connection" : "Bağlantı Testi");
 
+        logWindow->updateTexts(isEnglish);
         updateToggleLogText();
         updateStatusLabel();
         updateServiceLabel(discordLabel, "Discord", discordTestState, discordProgress, discordSuccess);
@@ -385,31 +557,31 @@ private:
         switch (currentStatus) {
             case StatusState::Checking:
                 statusLabel->setText(isEnglish ? "Status: Checking..." : "Durum: Kontrol Ediliyor...");
-                statusLabel->setStyleSheet("color: #d1d5db;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#94a3b8")));
                 break;
             case StatusState::Installed:
                 statusLabel->setText(isEnglish ? "Status: Zapret Installed" : "Durum: Zapret Kurulu");
-                statusLabel->setStyleSheet("color: #4ade80;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#4ade80")));
                 break;
             case StatusState::NotInstalled:
                 statusLabel->setText(isEnglish ? "Status: Not Installed" : "Durum: Kurulu Değil");
-                statusLabel->setStyleSheet("color: #d1d5db;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#cbd5e1")));
                 break;
             case StatusState::Installing:
                 statusLabel->setText(isEnglish ? "Status: Installing..." : "Durum: Kuruluyor...");
-                statusLabel->setStyleSheet("color: #f59e0b;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#fbbf24")));
                 break;
             case StatusState::Running:
-                statusLabel->setText(isEnglish ? "Status: Running" : "Durum: Çalışıyor");
-                statusLabel->setStyleSheet("color: #4ade80;");
+                statusLabel->setText(isEnglish ? "Status: Running Active" : "Durum: Aktif Çalışıyor");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#4ade80")));
                 break;
             case StatusState::Removing:
                 statusLabel->setText(isEnglish ? "Status: Removing..." : "Durum: Kaldırılıyor...");
-                statusLabel->setStyleSheet("color: #f59e0b;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#fbbf24")));
                 break;
             case StatusState::Removed:
                 statusLabel->setText(isEnglish ? "Status: Removed" : "Durum: Kaldırıldı");
-                statusLabel->setStyleSheet("color: #f87171;");
+                statusIconLabel->setPixmap(createStatusDot(QColor("#f87171")));
                 break;
         }
     }
@@ -418,23 +590,23 @@ private:
         switch (state) {
             case TestStatus::Untested:
                 lbl->setText(QString("• %1: %2").arg(serviceName, isEnglish ? "Not Tested" : "Test Edilmedi"));
-                lbl->setStyleSheet("color: #d1d5db;");
+                lbl->setStyleSheet("color: #94a3b8; font-size: 13px;");
                 break;
             case TestStatus::Waiting:
                 lbl->setText(QString("• %1: %2").arg(serviceName, isEnglish ? "Waiting..." : "Bekliyor..."));
-                lbl->setStyleSheet("color: #d1d5db;");
+                lbl->setStyleSheet("color: #94a3b8; font-size: 13px;");
                 break;
             case TestStatus::Testing:
                 lbl->setText(QString("• %1: %2 (%3/10)").arg(serviceName, isEnglish ? "Testing" : "Test Ediliyor").arg(progress));
-                lbl->setStyleSheet("color: #f59e0b;");
+                lbl->setStyleSheet("color: #fbbf24; font-size: 13px; font-weight: bold;");
                 break;
             case TestStatus::Success:
                 lbl->setText(QString("• %1: %2 (%3/10 OK)").arg(serviceName, isEnglish ? "Accessible" : "Erişilebilir").arg(successCount));
-                lbl->setStyleSheet("color: #4ade80; font-weight: bold;");
+                lbl->setStyleSheet("color: #4ade80; font-size: 13px; font-weight: bold;");
                 break;
             case TestStatus::Failed:
                 lbl->setText(QString("• %1: %2 (%3/10 OK)").arg(serviceName, isEnglish ? "Inaccessible" : "Erişilemedi").arg(successCount));
-                lbl->setStyleSheet("color: #f87171; font-weight: bold;");
+                lbl->setStyleSheet("color: #f87171; font-size: 13px; font-weight: bold;");
                 break;
         }
     }
@@ -471,7 +643,7 @@ private:
     void startZapret() {
         setButtonsEnabled(false);
         progressContainer->setVisible(true);
-        progressBar->setRange(0, 0); // Sürekli hareket eden yükleme animasyonu
+        progressBar->setRange(0, 0);
         spinner->start();
 
         appendLog(isEnglish 
@@ -538,7 +710,7 @@ private:
     void startMultiTests() {
         setButtonsEnabled(false);
         progressContainer->setVisible(true);
-        progressBar->setRange(0, 20); // 10 Discord + 10 Roblox
+        progressBar->setRange(0, 20);
         progressBar->setValue(0);
         spinner->start();
 
@@ -660,28 +832,168 @@ private:
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setStyleSheet(R"(
-        QWidget { background-color: #2C2C2C; color: #F3F4F4; font-family: 'Segoe UI', Ubuntu, sans-serif; }
-        QFrame#card { background-color: #612D53; border-radius: 4px; border: 1px solid #853953; }
-        QLabel { font-size: 13px; color: #F3F4F4; }
-        QLabel#title { font-size: 20px; font-weight: bold; color: #F3F4F4; }
-        QLabel#status { font-size: 14px; font-weight: 600; color: #F3F4F4; }
-        QPushButton { color: #F3F4F4; font-weight: bold; font-size: 13px; padding: 10px; border-radius: 3px; border: none; }
-        QPushButton#btnStart { background-color: #853953; }
-        QPushButton#btnStart:hover { background-color: #a04565; }
-        QPushButton#btnStop { background-color: #44213a; border: 1px solid #853953; }
-        QPushButton#btnStop:hover { background-color: #582b4b; }
-        QPushButton#btnTest { background-color: #612D53; border: 1px solid #853953; }
-        QPushButton#btnTest:hover { background-color: #7a3869; }
-        QPushButton#btnToggleLog { background-color: #383838; color: #d1d5db; font-size: 12px; font-weight: 600; padding: 7px; border-radius: 3px; border: 1px solid #4f4f4f; }
-        QPushButton#btnToggleLog:hover { background-color: #484848; color: #F3F4F4; }
-        QPushButton:disabled { background-color: #1e1e1e; color: #666666; border: none; }
-        QComboBox#langCombo { background-color: #44213a; color: #F3F4F4; border: 1px solid #853953; border-radius: 3px; padding: 4px 10px; font-weight: bold; font-size: 12px; }
-        QComboBox#langCombo:hover { background-color: #582b4b; }
-        QComboBox#langCombo::drop-down { border: none; }
-        QComboBox#langCombo QAbstractItemView { background-color: #2C2C2C; color: #F3F4F4; selection-background-color: #853953; selection-color: #F3F4F4; border: 1px solid #853953; outline: none; }
-        QProgressBar { background-color: #1e1e1e; color: #F3F4F4; border: 1px solid #853953; border-radius: 3px; text-align: center; font-size: 11px; font-weight: bold; height: 16px; }
-        QProgressBar::chunk { background-color: #853953; border-radius: 2px; }
-        QTextEdit { background-color: #1e1e1e; color: #F3F4F4; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; border: 1px solid #612D53; border-radius: 3px; padding: 8px; }
+        QWidget { 
+            background-color: #141418; 
+            color: #f1f5f9; 
+            font-family: 'Inter', 'Segoe UI', Ubuntu, sans-serif; 
+        }
+        
+        /* Kartlar */
+        QWidget#card, QWidget#cardStatus { 
+            background-color: #1e1b24; 
+            border-radius: 4px; 
+            border: 1px solid #3d2438; 
+        }
+        QWidget#cardStatus {
+            border-left: 3px solid #853953;
+        }
+
+        /* Başlıklar */
+        QLabel#title { 
+            font-size: 20px; 
+            font-weight: 800; 
+            color: #ffffff; 
+            letter-spacing: -0.5px;
+        }
+        QLabel#subtitle {
+            font-size: 13px; 
+            font-weight: 500; 
+            color: #94a3b8; 
+            margin-top: 5px;
+        }
+        QLabel#status { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #f1f5f9; 
+        }
+        QLabel#lblLang { 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: #cbd5e1; 
+        }
+
+        /* Butonlar */
+        QPushButton { 
+            font-weight: 600; 
+            font-size: 13px; 
+            padding: 10px 14px; 
+            border-radius: 3px; 
+            border: none; 
+        }
+        QPushButton#btnStart { 
+            background-color: #96335d; 
+            color: #ffffff;
+        }
+        QPushButton#btnStart:hover { 
+            background-color: #b33d6f; 
+        }
+        QPushButton#btnStart:pressed { 
+            background-color: #7d2a4e; 
+        }
+        QPushButton#btnStop { 
+            background-color: #271c26; 
+            color: #f87171;
+            border: 1px solid #542445; 
+        }
+        QPushButton#btnStop:hover { 
+            background-color: #382436; 
+        }
+        QPushButton#btnStop:pressed { 
+            background-color: #1f161e; 
+        }
+        QPushButton#btnTest { 
+            background-color: #2e1d2c; 
+            color: #f1f5f9;
+            border: 1px solid #5a284c; 
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        QPushButton#btnTest:hover { 
+            background-color: #42263f; 
+        }
+        QPushButton#btnToggleLog { 
+            background-color: #1c1a22; 
+            color: #cbd5e1; 
+            font-size: 12px; 
+            padding: 8px; 
+            border-radius: 3px; 
+            border: 1px solid #352b3e; 
+        }
+        QPushButton#btnToggleLog:hover { 
+            background-color: #262230; 
+            color: #ffffff;
+            border-color: #4c3e59;
+        }
+        QPushButton#btnClearLog {
+            background-color: #262230;
+            color: #cbd5e1;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            border: 1px solid #3d354d;
+        }
+        QPushButton#btnClearLog:hover {
+            background-color: #362f44;
+            color: #ffffff;
+        }
+        QPushButton:disabled { 
+            background-color: #1a1920; 
+            color: #52525b; 
+            border: 1px solid #27272a; 
+        }
+
+        /* Dropdown */
+        QComboBox#langCombo { 
+            background-color: #241c26; 
+            color: #f1f5f9; 
+            border: 1px solid #4a2741; 
+            border-radius: 3px; 
+            padding: 4px 10px; 
+            font-weight: 600; 
+            font-size: 12px; 
+        }
+        QComboBox#langCombo:hover { 
+            background-color: #332336; 
+        }
+        QComboBox#langCombo::drop-down { 
+            border: none; 
+        }
+        QComboBox#langCombo QAbstractItemView { 
+            background-color: #1e1b24; 
+            color: #f1f5f9; 
+            selection-background-color: #96335d; 
+            selection-color: #ffffff; 
+            border: 1px solid #4a2741; 
+            outline: none; 
+        }
+
+        /* İlerleme Çubuğu */
+        QProgressBar { 
+            background-color: #18171f; 
+            color: #f1f5f9; 
+            border: 1px solid #4a2741; 
+            border-radius: 3px; 
+            text-align: center; 
+            font-size: 11px; 
+            font-weight: 700; 
+            height: 16px; 
+        }
+        QProgressBar::chunk { 
+            background-color: #96335d; 
+            border-radius: 2px; 
+        }
+
+        /* Günlük Alanı */
+        QTextEdit { 
+            background-color: #0d0d11; 
+            color: #e2e8f0; 
+            font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; 
+            font-size: 12px; 
+            border: 1px solid #2d2638; 
+            border-radius: 3px; 
+            padding: 10px; 
+            line-height: 1.4;
+        }
     )");
 
     QStringList args = app.arguments();
