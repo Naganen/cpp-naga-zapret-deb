@@ -1,0 +1,60 @@
+name: Build and Package DEB
+
+on:
+  push:
+    branches:
+      - dev  # dev dalına yapılan push işlemlerinde otomatik çalışır
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential qt6-base-dev dpkg-dev
+
+      - name: Build Project
+        run: |
+          cmake -B build -S .
+          cmake --build build -j$(nproc)
+
+      - name: Prepare DEB Package Directory
+        run: |
+          # Derlenen binary dosyasını paket klasörüne kopyala
+          mkdir -p naga-zapret-package/usr/bin
+          cp build/naga-zapret naga-zapret-package/usr/bin/
+          
+          # İzinleri Linux standartlarına sabitle
+          chmod 755 naga-zapret-package/DEBIAN
+          chmod 644 naga-zapret-package/DEBIAN/control
+          chmod +x naga-zapret-package/usr/share/naga-zapret/install.sh
+
+      - name: Build DEB Package and Move to packages/
+        run: |
+          # control dosyasından sürüm numarasını otomatik oku
+          VERSION=$(grep '^Version:' naga-zapret-package/DEBIAN/control | awk '{print $2}')
+          
+          # İstenen formatta dosya adı oluştur: naga_zapret_v0.0.00_amd64.deb
+          DEB_NAME="naga_zapret_v${VERSION}_amd64.deb"
+          
+          # Ana dizinde packages klasörünü oluştur
+          mkdir -p packages
+          
+          # Paketi doğrudan packages klasörü içine derle
+          dpkg-deb --build naga-zapret-package "packages/$DEB_NAME"
+          
+          echo "Created package: packages/$DEB_NAME"
+
+      - name: Commit and Push Package to dev Branch
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          
+          git add packages/
+          git commit -m "chore: auto-generate DEB package for v${VERSION} [skip ci]" || echo "No changes to commit"
+          git push
