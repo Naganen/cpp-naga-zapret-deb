@@ -35,6 +35,7 @@
 // Sistem temasına (açık/koyu) ve dosya konumlarına göre logo yükleyici
 static QIcon getAppIcon() {
     bool isLight = QApplication::palette().color(QPalette::Window).lightness() > 190;
+    bool isDark = !isLight;
     QString whiteLogo = "naga-zapret-logo-white.svg";
     QString blackLogo = "naga-zapret-logo.svg";
     QString primary = isLight ? blackLogo : whiteLogo;
