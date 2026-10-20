@@ -1,5 +1,5 @@
 Package: naga-zapret
-Version: 0.0.11
+Version: 0.0.14
 Architecture: amd64
 Maintainer: Naganen <naganen@outlook.com.tr>
 Depends: libqt6widgets6, libqt6network6, pkexec, curl, jq, iptables, nftables
